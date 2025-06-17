@@ -1,11 +1,13 @@
-package staysplit.hotel_reservation.domain.common.exception;
+package staysplit.hotel_reservation.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-public class ErrorResult {
+public class ErrorResponse {
     private ErrorCode errorCode;
     private String message;
 }

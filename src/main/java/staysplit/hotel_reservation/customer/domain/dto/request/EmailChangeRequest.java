@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.customer.domain.dto;
+package staysplit.hotel_reservation.customer.domain.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

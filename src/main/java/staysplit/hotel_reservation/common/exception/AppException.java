@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.exception;
+package staysplit.hotel_reservation.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

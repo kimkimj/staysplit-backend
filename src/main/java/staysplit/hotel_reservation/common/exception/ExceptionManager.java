@@ -1,10 +1,10 @@
-package staysplit.hotel_reservation.domain.common.exception;
+package staysplit.hotel_reservation.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import staysplit.hotel_reservation.domain.common.entity.Response;
+import staysplit.hotel_reservation.common.entity.Response;
 
 @RestControllerAdvice
 public class ExceptionManager {

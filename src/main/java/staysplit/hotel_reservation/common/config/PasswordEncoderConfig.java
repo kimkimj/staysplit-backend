@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.config;
+package staysplit.hotel_reservation.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

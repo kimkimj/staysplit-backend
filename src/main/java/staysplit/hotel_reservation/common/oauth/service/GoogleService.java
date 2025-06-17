@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.auth.service;
+package staysplit.hotel_reservation.common.oauth.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
-import staysplit.hotel_reservation.domain.common.auth.dto.AccessTokenDto;
-import staysplit.hotel_reservation.domain.common.auth.dto.GoogleProfileDto;
+import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
+import staysplit.hotel_reservation.common.oauth.dto.GoogleProfileDto;
 
 @Service
 public class GoogleService {

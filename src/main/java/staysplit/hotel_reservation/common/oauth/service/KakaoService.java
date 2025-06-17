@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.auth.service;
+package staysplit.hotel_reservation.common.oauth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
-import staysplit.hotel_reservation.domain.common.auth.dto.AccessTokenDto;
-import staysplit.hotel_reservation.domain.common.auth.dto.KakaoProfileDto;
+import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
+import staysplit.hotel_reservation.common.oauth.dto.KakaoProfileDto;
 
 @Service
 @RequiredArgsConstructor

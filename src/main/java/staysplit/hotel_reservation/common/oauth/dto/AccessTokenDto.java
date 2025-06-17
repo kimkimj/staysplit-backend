@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.auth.dto;
+package staysplit.hotel_reservation.common.oauth.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GoogleProfileDto {
-    private String sub;
-    private String email;
-    //private String picture;
+public class AccessTokenDto {
+    private String accessToken;
 }

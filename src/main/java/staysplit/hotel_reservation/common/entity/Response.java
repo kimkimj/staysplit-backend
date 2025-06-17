@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.entity;
+package staysplit.hotel_reservation.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

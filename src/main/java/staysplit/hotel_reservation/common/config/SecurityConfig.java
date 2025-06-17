@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.config;
+package staysplit.hotel_reservation.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import staysplit.hotel_reservation.domain.common.auth.JwtTokenFilter;
+import staysplit.hotel_reservation.common.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
 
@@ -23,7 +23,9 @@ public class SecurityConfig {
 
     private final String[] ALLOWED_URLS = {
             "/api/customers/sign-up",
-            "/api/customers/login",
+            "/api/providers/sign-up",
+            "/api/users/login",
+
             "/oauth2/authorization/google",
             "/login/oauth2/code/google",
             "/api/customers/google/login",
