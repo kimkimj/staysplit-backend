@@ -1,9 +1,9 @@
-package staysplit.hotel_reservation.domain.customer.domain.dto;
+package staysplit.hotel_reservation.customer.domain.dto.request;
 
 import java.time.LocalDate;
 
 // TODO: validation
-public record CustomerCreateRequest(
+public record CustomerSignupRequest(
 
         String email,
         String password,

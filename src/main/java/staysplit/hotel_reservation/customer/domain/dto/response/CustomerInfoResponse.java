@@ -1,6 +1,6 @@
-package staysplit.hotel_reservation.domain.customer.domain.dto;
+package staysplit.hotel_reservation.customer.domain.dto.response;
 
-import staysplit.hotel_reservation.domain.customer.domain.Customer;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 
 import java.time.LocalDate;
 
@@ -11,10 +11,10 @@ public record CustomerInfoResponse(
         LocalDate birthdate,
         String nickname) {
 
-    public static CustomerInfoResponse from(Customer customer) {
+    public static CustomerInfoResponse from(CustomerEntity customer) {
         return new CustomerInfoResponse(
                 customer.getId(),
-                customer.getEmail(),
+                customer.getUser().getEmail(),
                 customer.getName(),
                 customer.getBirthdate(),
                 customer.getNickname()
