@@ -26,4 +26,9 @@ public class Customer extends User {
     @Setter
     @Column(length = 30)
     private String nickname;
+
+//    @Enumerated(EnumType.STRING)
+//    private SocialType socialType;
+
+    private String socialId;
 }

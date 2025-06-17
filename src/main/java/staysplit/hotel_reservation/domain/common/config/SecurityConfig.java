@@ -21,6 +21,16 @@ public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
 
+    private final String[] ALLOWED_URLS = {
+            "/api/customers/sign-up",
+            "/api/customers/login",
+            "/oauth2/authorization/google",
+            "/login/oauth2/code/google",
+            "/api/customers/google/login",
+            "/oauth/**"
+    };
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -29,7 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(req -> req.requestMatchers("/api/customers/sign-up", "/api/customers/login")
+                .authorizeHttpRequests(req -> req.requestMatchers(ALLOWED_URLS)
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
