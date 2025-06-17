@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.domain.common.entity;
+package staysplit.hotel_reservation.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -14,7 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
