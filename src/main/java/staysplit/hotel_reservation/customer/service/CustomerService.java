@@ -1,0 +1,108 @@
+package staysplit.hotel_reservation.customer.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupRequest;
+import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
+import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
+import staysplit.hotel_reservation.customer.repository.CustomerRepository;
+import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.enums.LoginSource;
+import staysplit.hotel_reservation.user.domain.enums.Role;
+import staysplit.hotel_reservation.user.repository.UserRepository;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CustomerService {
+
+    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public CustomerInfoResponse signup(CustomerSignupRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
+        }
+
+        if (customerRepository.existsByNickname(request.nickname())) {
+            throw new AppException(ErrorCode.DUPLICATE_NICKNAME, ErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
+
+        UserEntity user = UserEntity.builder()
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .role(Role.CUSTOMER)
+                .loginSource(LoginSource.LOCAL)
+                .build();
+
+        userRepository.save(user);
+
+        CustomerEntity customer = CustomerEntity.builder()
+                .user(user)
+                .name(request.name())
+                .birthdate(request.birthdate())
+                .nickname(request.nickname())
+                .build();
+
+        customerRepository.save(customer);
+        return CustomerInfoResponse.from(customer);
+    }
+
+    // 내 프로필
+    public CustomerInfoResponse getMyProfile(String email) {
+        CustomerEntity customer = validateCustomer(email);
+        return CustomerInfoResponse.from(customer);
+    }
+
+    public CustomerInfoResponse findCustomerById(Long id) {
+        CustomerEntity customer = validateCustomer(id);
+        return CustomerInfoResponse.from(customer);
+    }
+
+    public CustomerInfoResponse changeNickname(NicknameChangeRequest request, String email) {
+        CustomerEntity customer = validateCustomer(email);
+        if (customerRepository.existsByNickname(request.getNickname())) {
+            throw new AppException(ErrorCode.DUPLICATE_NICKNAME, ErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
+        customer.setNickname(request.getNickname());
+        return CustomerInfoResponse.from(customer);
+    }
+
+//    // 두번째 이메일은 Authentication 객체에 있는 값
+//    public CustomerInfoResponse changeEmail(EmailChangeRequest emailChangeRequest, String email) {
+//        CustomerEntity customer = validateCustomer(email);
+//        if (customerRepository.existsByEmail(emailChangeRequest.getEmail())) {
+//            throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
+//        }
+//        customer.changeEmail(emailChangeRequest.getEmail());
+//        return CustomerInfoResponse.from(customer);
+//    }
+
+    public void delete(String email) {
+        CustomerEntity customer = validateCustomer(email);
+        customerRepository.delete(customer);
+    }
+
+    private CustomerEntity validateCustomer(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+    }
+
+    private CustomerEntity validateCustomer(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+
+        return customerRepository.findByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+
+//        return customerRepository.findByEmail(email)
+//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+    }
+
+}
