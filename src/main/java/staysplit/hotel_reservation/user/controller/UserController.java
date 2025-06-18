@@ -1,11 +1,11 @@
 package staysplit.hotel_reservation.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
+import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
 import staysplit.hotel_reservation.provider.service.ProviderService;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
 import staysplit.hotel_reservation.user.service.UserService;
@@ -24,4 +24,7 @@ public class UserController {
         String jwt = userService.login(loginRequest);
         return Response.success(jwt);
     }
+
+
+    // 사용자 삭제
 }
