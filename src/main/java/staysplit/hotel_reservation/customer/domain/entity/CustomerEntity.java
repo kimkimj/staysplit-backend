@@ -17,8 +17,8 @@ public class CustomerEntity {
     @Id
     private Long id;
 
-    @OneToOne
     @MapsId
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

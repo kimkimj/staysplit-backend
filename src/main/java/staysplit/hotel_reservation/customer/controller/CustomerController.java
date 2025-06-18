@@ -31,12 +31,41 @@ public class CustomerController {
         return Response.success(customerInfoResponse);
     }
 
-//    // 일반 로그인
-//    @PostMapping("/login")
-//    public Response<String> login(@RequestBody CustomerLoginRequest loginRequest) {
-//        String jwt = customerService.login(loginRequest);
-//        return Response.success(jwt);
+    // 사용자 프로필 조회
+    @GetMapping("/my")
+    public Response<CustomerInfoResponse> getMyInfo(Authentication authentication) {
+        CustomerInfoResponse customerInfoResponse = customerService.getMyProfile(authentication.getName());
+        return Response.success(customerInfoResponse);
+    }
+
+    // 사용자 정보 조회 - Admin
+    @GetMapping("/{id}")
+    public Response<CustomerInfoResponse> getUserDetails(@PathVariable Long id) {
+        CustomerInfoResponse customerInfoResponse = customerService.findCustomerById(id);
+        return Response.success(customerInfoResponse);
+    }
+
+    // 사용자 이름 수정
+    @PutMapping("/nickname")
+    public Response<CustomerInfoResponse> changeNickname(@RequestBody NicknameChangeRequest request, Authentication authentication) {
+        CustomerInfoResponse customerInfoResponse = customerService.changeNickname(request, authentication.getName());
+        return Response.success(customerInfoResponse);
+    }
+
+    // 이메일 변경
+//    @PutMapping("/email")
+//    public Response<CustomerInfoResponse> changeEmail(@RequestBody EmailChangeRequest request, Authentication authentication) {
+//        CustomerInfoResponse customerInfoResponse = customerService.changeEmail(request, authentication.getName());
+//        return Response.success(customerInfoResponse);
 //    }
+
+    // 내 계정 삭제
+    @DeleteMapping("/my")
+    public Response<String> delete(Authentication authentication) {
+        customerService.delete(authentication.getName());
+        return Response.success("계정이 삭제되었습니다.");
+    }
+
 
 //    // 구글 로그인
 //    @PostMapping("/google/login")
@@ -66,30 +95,5 @@ public class CustomerController {
 //        );
 //        return Response.success(response);
 //    }
-
-
-    @GetMapping("/{id}")
-    public Response<CustomerInfoResponse> getUserDetails(@PathVariable Long id) {
-        CustomerInfoResponse customerInfoResponse = customerService.findCustomerById(id);
-        return Response.success(customerInfoResponse);
-    }
-
-    @PutMapping("/nickname")
-    public Response<CustomerInfoResponse> changeNickname(@RequestBody NicknameChangeRequest request, Authentication authentication) {
-        CustomerInfoResponse customerInfoResponse = customerService.changeNickname(request, authentication.getName());
-        return Response.success(customerInfoResponse);
-    }
-
-//    @PutMapping("/email")
-//    public Response<CustomerInfoResponse> changeEmail(@RequestBody EmailChangeRequest request, Authentication authentication) {
-//        CustomerInfoResponse customerInfoResponse = customerService.changeEmail(request, authentication.getName());
-//        return Response.success(customerInfoResponse);
-//    }
-
-    @DeleteMapping("/{id}")
-    public Response<Void> delete(@PathVariable Long id) {
-        customerService.delete(id);
-        return Response.success(null);
-    }
 
 }

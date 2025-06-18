@@ -54,6 +54,12 @@ public class CustomerService {
         return CustomerInfoResponse.from(customer);
     }
 
+    // 내 프로필
+    public CustomerInfoResponse getMyProfile(String email) {
+        CustomerEntity customer = validateCustomer(email);
+        return CustomerInfoResponse.from(customer);
+    }
+
     public CustomerInfoResponse findCustomerById(Long id) {
         CustomerEntity customer = validateCustomer(id);
         return CustomerInfoResponse.from(customer);
@@ -78,8 +84,8 @@ public class CustomerService {
 //        return CustomerInfoResponse.from(customer);
 //    }
 
-    public void delete(Long customerId) {
-        CustomerEntity customer = validateCustomer(customerId);
+    public void delete(String email) {
+        CustomerEntity customer = validateCustomer(email);
         customerRepository.delete(customer);
     }
 
