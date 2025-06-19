@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
 
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
