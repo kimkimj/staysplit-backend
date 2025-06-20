@@ -6,6 +6,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
