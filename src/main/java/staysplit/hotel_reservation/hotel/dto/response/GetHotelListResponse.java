@@ -2,7 +2,6 @@ package staysplit.hotel_reservation.hotel.dto.response;
 
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 
-
 public record GetHotelListResponse(
         Long hotelId,
         String name,

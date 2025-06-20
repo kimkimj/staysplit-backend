@@ -53,12 +53,11 @@ public class HotelController {
 
     //호텔 삭제
     @DeleteMapping("/{hotelId}")
-    public Response deleteHotel(@PathVariable Long hotelId, @RequestParam Long providerId){
+    public Response<String> deleteHotel(@PathVariable Long hotelId, @RequestParam Long providerId){
 
         DeleteHotelRequest request=new DeleteHotelRequest(hotelId, providerId);
         hotelService.deleteHotel(request);
         return Response.success("호텔이 삭제되었습니다.");
-
     }
 
 }
