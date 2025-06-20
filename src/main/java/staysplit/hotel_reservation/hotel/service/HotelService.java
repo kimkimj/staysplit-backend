@@ -47,6 +47,8 @@ public class HotelService {
                 .build();
 
         //hotel.createHotel(request);
+        provider.addHotel(hotel);
+        providerRepository.save(provider);
 
         HotelEntity savedHotel=hotelRepository.save(hotel);
         return CreateHotelResponse.toDto(savedHotel);

@@ -5,10 +5,8 @@ import org.springframework.stereotype.Repository;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
 
-import java.util.Optional;
 
 @Repository
 public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> {
     boolean existsByUser(UserEntity user);
-    Optional<ProviderEntity> findByEmail(String email);
 }

@@ -18,7 +18,10 @@ public enum ErrorCode {
 
     // Room
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 방입니다"),
-    UNAUTHORIZED_PROVIDER(HttpStatus.UNAUTHORIZED, "이 방에 대한 권한이 없습니다");
+    UNAUTHORIZED_PROVIDER(HttpStatus.UNAUTHORIZED, "이 방에 대한 권한이 없습니다"),
+
+    // Hotel
+    HOTEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 호텔입니다");
 
 
     private HttpStatus httpStatus;

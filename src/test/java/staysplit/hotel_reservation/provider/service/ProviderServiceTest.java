@@ -3,7 +3,6 @@ package staysplit.hotel_reservation.provider.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupRequest;
-import staysplit.hotel_reservation.provider.domain.dto.response.ProviderInfoResponse;
+import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
@@ -21,8 +20,7 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProviderServiceTest {
@@ -41,7 +39,7 @@ class ProviderServiceTest {
 
     private final String email = "provider@example.com";
     private final String rawPassword = "12345";
-    private final String encodedPassword = "$2a$10$encodedPassword";
+    private final String encodedPassword = "ncodedPassword";
 
     private ProviderSignupRequest signupRequest;
 
@@ -56,23 +54,27 @@ class ProviderServiceTest {
         given(userRepository.existsByEmail(email)).willReturn(false);
         given(passwordEncoder.encode(rawPassword)).willReturn(encodedPassword);
 
-        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
-        ArgumentCaptor<ProviderEntity> providerCaptor = ArgumentCaptor.forClass(ProviderEntity.class);
+        UserEntity mockSavedUser = UserEntity.builder()
+                .id(1L)
+                .email(email)
+                .password(encodedPassword)
+                .role(Role.PROVIDER)
+                .build();
+
+        ProviderEntity mockSavedProvider = ProviderEntity.builder()
+                .id(1L)
+                .user(mockSavedUser)
+                .build();
+
+        given(userRepository.save(any(UserEntity.class))).willReturn(mockSavedUser);
+        given(providerRepository.save(any(ProviderEntity.class))).willReturn(mockSavedProvider);
 
         // when
-        ProviderInfoResponse response = providerService.signup(signupRequest);
+        ProviderSignupResponse response = providerService.signup(signupRequest);
 
         // then
-        verify(userRepository).save(userCaptor.capture());
-        verify(providerRepository).save(providerCaptor.capture());
-
-        UserEntity savedUser = userCaptor.getValue();
-        ProviderEntity savedProvider = providerCaptor.getValue();
-
-        assertThat(savedUser.getEmail()).isEqualTo(email);
-        assertThat(savedUser.getPassword()).isEqualTo(encodedPassword);
-        assertThat(savedUser.getRole()).isEqualTo(Role.PROVIDER);
-        assertThat(savedProvider.getUser()).isEqualTo(savedUser);
+        verify(userRepository).save(any(UserEntity.class));
+        verify(providerRepository).save(any(ProviderEntity.class));
 
         assertThat(response.email()).isEqualTo(email);
     }

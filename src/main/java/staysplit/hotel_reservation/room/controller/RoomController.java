@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
 import staysplit.hotel_reservation.room.domain.dto.request.RoomCreateRequest;
+import staysplit.hotel_reservation.room.domain.dto.response.RoomDeleteResponse;
 import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.service.RoomService;
 
@@ -32,15 +33,15 @@ public class RoomController {
     }
 
     @DeleteMapping("/{roomId}")
-    public Response<String> deleteRoom(@PathVariable Long roomId, Authentication authentication) {
-        String message = roomService.deleteRoom(authentication.getName(), roomId);
-        return Response.success(message);
+    public Response<RoomDeleteResponse> deleteRoom(@PathVariable Long roomId, Authentication authentication) {
+        RoomDeleteResponse response = roomService.deleteRoom(authentication.getName(), roomId);
+        return Response.success(response);
     }
 
     //
     // TODO: HotelController에 옮기고, SecConfig에서 uri 열어두기
     // GET ALL ROOMS
-    @GetMapping("/{hotelId}")
+    @GetMapping("/hotels/{hotelId}")
     public Response<Page<RoomInfoResponse>> findAllRoomsByHotelId(@PathVariable Long hotelId,
                                                                   @PageableDefault(size = 10, sort = "price", direction = Sort.Direction.ASC)
                                                                   Pageable pageable) {

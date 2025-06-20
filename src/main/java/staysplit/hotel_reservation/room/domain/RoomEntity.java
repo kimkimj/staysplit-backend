@@ -2,7 +2,7 @@ package staysplit.hotel_reservation.room.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import staysplit.hotel_reservation.HotelEntity;
+import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 
 @Entity
 @Getter

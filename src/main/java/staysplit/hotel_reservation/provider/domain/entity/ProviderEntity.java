@@ -2,7 +2,7 @@ package staysplit.hotel_reservation.provider.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import staysplit.hotel_reservation.HotelEntity;
+import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
 
 @Entity
@@ -21,6 +21,10 @@ public class ProviderEntity {
     private UserEntity user;
 
     @OneToOne
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @JoinColumn(name = "hotel_id")
     private HotelEntity hotel;
+
+    public void addHotel(HotelEntity hotel) {
+        this.hotel = hotel;
+    }
 }
