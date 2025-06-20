@@ -9,7 +9,6 @@ import staysplit.hotel_reservation.hotel.dto.response.GetHotelDetailResponse;
 import staysplit.hotel_reservation.hotel.dto.response.GetHotelListResponse;
 import staysplit.hotel_reservation.hotel.dto.response.UpdateHotelResponse;
 import staysplit.hotel_reservation.hotel.service.HotelService;
-import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 
 import java.util.List;
 
@@ -23,14 +22,14 @@ public class HotelController {
 
     //호텔 생성
     @PostMapping("/")
-    public Response<CreateHotelResponse> createhotel(@RequestBody CreateHotelRequest request){
+    public Response<CreateHotelResponse> createHotel(@RequestBody CreateHotelRequest request){
         CreateHotelResponse createHotelResponse=hotelService.createHotel(request);
         return Response.success(createHotelResponse);
     }
 
     //호텔 수정
     @PatchMapping("/")
-    public Response<UpdateHotelResponse> updatehotel(UpdateHotelRequest request){
+    public Response<UpdateHotelResponse> updateHotel(UpdateHotelRequest request){
 
         UpdateHotelResponse response=hotelService.updateHotel(request);
         return Response.success(response);

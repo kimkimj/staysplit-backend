@@ -32,15 +32,16 @@ public class HotelEntity {
     private Integer starLevel; //호텔 성급(ex.5성급)
     private Double rating; //별점
     private Integer reviewCount; //리뷰 수
-    private String imageUrl; //메인이미지
+    private String imageUrl; //메인 이미지
 
-    public void updateHotel(UpdateHotelRequest request){
-        this.name=request.getName();
-        this.address=request.getAddress();
-        this.description=request.getDescription();
-        this.starLevel=request.getStarLevel();
-        this.rating=request.getRating();
-        this.imageUrl=request.getImageUrl();
+    public void updateHotel(UpdateHotelRequest request) {
+        this.name = request.name();
+        this.address = request.address();
+        this.description = request.description();
+        this.starLevel = request.starLevel();
+        this.rating = request.rating();
+        this.imageUrl = request.imageUrl();
     }
+
 
 }
