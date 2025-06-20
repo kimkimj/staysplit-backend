@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupRequest;
-import staysplit.hotel_reservation.provider.domain.dto.response.ProviderInfoResponse;
+import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
@@ -20,12 +21,12 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 @RequiredArgsConstructor
 public class ProviderService {
     private final ProviderRepository providerRepository;
-    // private final HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-    public ProviderInfoResponse signup(ProviderSignupRequest request) {
+    public ProviderSignupResponse signup(ProviderSignupRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
         }
@@ -45,7 +46,7 @@ public class ProviderService {
 
         providerRepository.save(provider);
 
-        return ProviderInfoResponse.from(provider);
+        return new ProviderSignupResponse(provider.getUser().getEmail());
     }
 
 }
