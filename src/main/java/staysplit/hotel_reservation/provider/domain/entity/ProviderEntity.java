@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.provider.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 @Entity
 @Getter

@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import staysplit.hotel_reservation.common.jwt.JwtTokenFilter;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
 
