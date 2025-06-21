@@ -7,7 +7,7 @@ import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import java.time.LocalDate;
 
 public record CreateReviewResponse(
-        Long id,
+        Long reviewId,
         Long userId,
         Long hotelId,
         String content,

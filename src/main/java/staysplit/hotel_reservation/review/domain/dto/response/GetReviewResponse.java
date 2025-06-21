@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.review.domain.dto.response;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 
 public record GetReviewResponse(
-        Long id,
+        Long reviewId,
         Long userId,
         Long hotelId,
         String content,

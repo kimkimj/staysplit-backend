@@ -7,14 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.review.domain.dto.request.CreateReviewRequest;
+import staysplit.hotel_reservation.review.domain.dto.request.ModifyReviewRequest;
 import staysplit.hotel_reservation.review.domain.dto.response.CreateReviewResponse;
-import staysplit.hotel_reservation.review.domain.dto.response.DeleteReviewResponse;
 import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -23,8 +21,12 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     public CreateReviewResponse createReview(CreateReviewRequest request){
+        boolean exists = reviewRepository.existsByUserIdAndHotelId(request.userId(), request.hotelId());
+        if (exists) {
+            throw new IllegalStateException("이미 해당 호텔에 대한 리뷰를 작성하셨습니다.");
+        }
+
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(request.id())
                 .hotelId(request.hotelId())
                 .userId(request.userId())
                 .content(request.content())
@@ -47,22 +49,20 @@ public class ReviewService {
         return review.map(GetReviewResponse::from);
     }
 
-    public GetReviewResponse modifyReview(ReviewEntity targetReview){
-        ReviewEntity review = validateReview(targetReview.getReviewId());
-        hasAuthority(review, targetReview.getUserId(), targetReview.getReviewId());
+    public GetReviewResponse modifyReview(ModifyReviewRequest request){
+        ReviewEntity review = validateReview(request.reviewId());
+        hasAuthority(review, request.userId(), request.reviewId());
 
-        review.setContent(targetReview.getContent());
-        review.setRating(targetReview.getRating());
+        review.setContent(request.content());
+        review.setRating(request.rating());
 
         return GetReviewResponse.from(review);
     }
 
-    public DeleteReviewResponse deleteReview(Long userId, Long reviewId) {
+    public void deleteReview(Long userId, Long reviewId) {
         ReviewEntity review = validateReview(reviewId);
         hasAuthority(review, userId, reviewId);
-        DeleteReviewResponse response = new DeleteReviewResponse(userId, reviewId);
-        reviewRepository.deleteReview(userId, reviewId);
-        return response;
+        reviewRepository.delete(review);
     }
 
     private ReviewEntity validateReview(Long reviewId) {
