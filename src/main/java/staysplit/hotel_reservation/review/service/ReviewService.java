@@ -1,15 +1,20 @@
 package staysplit.hotel_reservation.review.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import staysplit.hotel_reservation.review.domain.Review;
-import staysplit.hotel_reservation.review.dto.CreateReviewRequest;
-import staysplit.hotel_reservation.review.dto.GetReviewResponse;
+import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.review.domain.dto.request.CreateReviewRequest;
+import staysplit.hotel_reservation.review.domain.dto.response.CreateReviewResponse;
+import staysplit.hotel_reservation.review.domain.dto.response.DeleteReviewResponse;
+import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
+import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
+import staysplit.hotel_reservation.common.exception.ErrorCode;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -17,31 +22,60 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
-    public Review createReview(CreateReviewRequest createReviewRequest){
-    //FIXME: 리뷰의 중복체크?
-        Review review = Review.builder()
-                .id(createReviewRequest.id())
-                .hotel_id(createReviewRequest.hotel_id())
-                .user_id(createReviewRequest.user_id())
-                .content(createReviewRequest.content())
-                .rate(createReviewRequest.rate())
+    public CreateReviewResponse createReview(CreateReviewRequest request){
+        ReviewEntity review = ReviewEntity.builder()
+                .reviewId(request.id())
+                .hotelId(request.hotelId())
+                .userId(request.userId())
+                .content(request.content())
+                .rating(request.rating())
                 .build();
 
         reviewRepository.save(review);
-        return review;
+        return CreateReviewResponse.from(review);
     }
 
     //FIXME:리뷰는 내 계정의 리뷰페이지에서보는건지, 호텔페이지에서 보는건지
-    public List<Review> getReviewByUser_id(long user_id, long  hotel_id){
-        return reviewRepository.getReviewByUser_id(user_id, hotel_id);
+    @Transactional(readOnly = true)
+    public Page<GetReviewResponse> getReviewByUserId(Long userId, Pageable pageable){
+        Page<ReviewEntity> review = reviewRepository.getReviewByUserId(userId, pageable);
+        return review.map(GetReviewResponse::from);
     }
 
-    public List<Review> getReviewByHotel_id(long  hotel_id){
-        return reviewRepository.getReviewByHotel_id(hotel_id);
+    @Transactional(readOnly = true)
+    public Page<GetReviewResponse> getReviewByHotelId(Long  hotelId, Pageable pageable){
+        Page<ReviewEntity> review = reviewRepository.getReviewByHotelId(hotelId, pageable);
+        return review.map(GetReviewResponse::from);
     }
 
-    public boolean editReview(long user_id,long review_id, long  hotel_id){
-        return reviewRepository.editReviewByHotel_id(user_id,review_id, hotel_id);
+    public GetReviewResponse modifyReview(ReviewEntity targetReview){
+        ReviewEntity review = validateReview(targetReview.getReviewId());
+        hasAuthority(review, targetReview.getUserId(), targetReview.getReviewId());
+
+        review.setContent(targetReview.getContent());
+        review.setRating(targetReview.getRating());
+
+        return GetReviewResponse.from(review);
     }
 
+    public DeleteReviewResponse deleteReview(Long userId, Long reviewId) {
+        ReviewEntity review = validateReview(reviewId);
+        hasAuthority(review, userId, reviewId);
+        DeleteReviewResponse response = new DeleteReviewResponse(userId, reviewId);
+        reviewRepository.deleteReview(userId, reviewId);
+        return response;
+    }
+
+    private ReviewEntity validateReview(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND,
+                        ErrorCode.REVIEW_NOT_FOUND.getMessage()));
+    }
+
+    private void hasAuthority(ReviewEntity review, Long userId, Long reviewId) {
+        if(!(review.getReviewId().equals(reviewId) && review.getUserId().equals(userId))){
+            throw new AppException(ErrorCode.UNAUTHORIZED_REVIEWER,
+                    ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
+        }
+    }
 }
