@@ -21,7 +21,7 @@ public enum ErrorCode {
     UNAUTHORIZED_PROVIDER(HttpStatus.UNAUTHORIZED, "이 방에 대한 권한이 없습니다"),
 
     // Hotel
-    HOTEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 호텔입니다");
+    HOTEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 호텔입니다"),
 
     // Review
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
