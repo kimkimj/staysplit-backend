@@ -3,17 +3,11 @@ package staysplit.hotel_reservation.customer.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
-import staysplit.hotel_reservation.common.oauth.dto.RedirectDto;
 import staysplit.hotel_reservation.common.oauth.service.GoogleService;
-import staysplit.hotel_reservation.common.exception.AppException;
-import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.entity.Response;
 import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
 import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupRequest;
-import staysplit.hotel_reservation.customer.domain.dto.request.CustomerLoginRequest;
-import staysplit.hotel_reservation.customer.domain.dto.request.EmailChangeRequest;
-import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
+import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.service.CustomerService;
 
 @RestController
@@ -26,30 +20,30 @@ public class CustomerController {
 
     // 일반 회원가입
     @PostMapping("/sign-up")
-    public Response<CustomerInfoResponse> signup(@RequestBody CustomerSignupRequest request) {
-        CustomerInfoResponse customerInfoResponse = customerService.signup(request);
-        return Response.success(customerInfoResponse);
+    public Response<CustomerDetailsResponse> signup(@RequestBody CustomerSignupRequest request) {
+        CustomerDetailsResponse customerDetailsResponse = customerService.signup(request);
+        return Response.success(customerDetailsResponse);
     }
 
     // 사용자 프로필 조회
     @GetMapping("/my")
-    public Response<CustomerInfoResponse> getMyInfo(Authentication authentication) {
-        CustomerInfoResponse customerInfoResponse = customerService.getMyProfile(authentication.getName());
-        return Response.success(customerInfoResponse);
+    public Response<CustomerDetailsResponse> getMyInfo(Authentication authentication) {
+        CustomerDetailsResponse customerDetailsResponse = customerService.getMyProfile(authentication.getName());
+        return Response.success(customerDetailsResponse);
     }
 
     // 사용자 정보 조회 - Admin
     @GetMapping("/{id}")
-    public Response<CustomerInfoResponse> getUserDetails(@PathVariable Long id) {
-        CustomerInfoResponse customerInfoResponse = customerService.findCustomerById(id);
-        return Response.success(customerInfoResponse);
+    public Response<CustomerDetailsResponse> getUserDetails(@PathVariable Long id) {
+        CustomerDetailsResponse customerDetailsResponse = customerService.findCustomerById(id);
+        return Response.success(customerDetailsResponse);
     }
 
     // 사용자 이름 수정
     @PutMapping("/nickname")
-    public Response<CustomerInfoResponse> changeNickname(@RequestBody NicknameChangeRequest request, Authentication authentication) {
-        CustomerInfoResponse customerInfoResponse = customerService.changeNickname(request, authentication.getName());
-        return Response.success(customerInfoResponse);
+    public Response<CustomerDetailsResponse> changeNickname(@RequestBody NicknameChangeRequest request, Authentication authentication) {
+        CustomerDetailsResponse customerDetailsResponse = customerService.changeNickname(request, authentication.getName());
+        return Response.success(customerDetailsResponse);
     }
 
     // 이메일 변경

@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.customer.domain.dto.request;
 
 import java.time.LocalDate;
 
-public record CustomerUpdateRequest(
+public record UpdateCustomerRequest(
 
         String email,
 

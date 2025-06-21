@@ -4,15 +4,15 @@ import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 
 import java.time.LocalDate;
 
-public record CustomerInfoResponse(
+public record CustomerDetailsResponse(
         Long id,
         String email,
         String name,
         LocalDate birthdate,
         String nickname) {
 
-    public static CustomerInfoResponse from(CustomerEntity customer) {
-        return new CustomerInfoResponse(
+    public static CustomerDetailsResponse from(CustomerEntity customer) {
+        return new CustomerDetailsResponse(
                 customer.getId(),
                 customer.getUser().getEmail(),
                 customer.getName(),

@@ -31,6 +31,15 @@ public class RoomEntity {
 
     String description;
 
+    public void updateRoom(String roomType, String photoUrl, Integer maxOccupancy,
+                           Integer price, String description) {
+        this.roomType = roomType;
+        this.photoUrl = photoUrl;
+        this.maxOccupancy = maxOccupancy;
+        this.price = price;
+        this.description = description;
+    }
+
     public void changeRoomType(String roomType) {
         this.roomType = roomType;
     }
@@ -49,6 +58,5 @@ public class RoomEntity {
 
     public void changeMaxOccupancy(Integer maxOccupancy) {
         this.maxOccupancy = maxOccupancy;
-
     }
 }
