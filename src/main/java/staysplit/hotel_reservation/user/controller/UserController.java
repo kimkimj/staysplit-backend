@@ -2,12 +2,11 @@ package staysplit.hotel_reservation.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
-import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
 import staysplit.hotel_reservation.provider.service.ProviderService;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
+import staysplit.hotel_reservation.user.domain.dto.request.PasswordUpdateRequest;
 import staysplit.hotel_reservation.user.service.UserService;
 
 @RestController
@@ -26,5 +25,11 @@ public class UserController {
     }
 
 
-    // 사용자 삭제
+    // 비밀 번호 변경
+    @PutMapping("/pw")
+    public Response<String> changePassword(@RequestBody PasswordUpdateRequest request,
+                                           Authentication authentication) {
+        String response = userService.changePassword(request, authentication.getName());
+        return Response.success(response);
+    }
 }
