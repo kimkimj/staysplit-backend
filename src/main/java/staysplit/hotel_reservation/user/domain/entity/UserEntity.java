@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.user.domain.dto.entity;
+package staysplit.hotel_reservation.user.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

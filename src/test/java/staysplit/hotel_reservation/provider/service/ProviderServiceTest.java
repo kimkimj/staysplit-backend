@@ -13,7 +13,7 @@ import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupReq
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 

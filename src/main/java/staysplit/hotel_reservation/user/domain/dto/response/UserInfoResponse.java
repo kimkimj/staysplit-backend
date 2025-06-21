@@ -1,6 +1,6 @@
 package staysplit.hotel_reservation.user.domain.dto.response;
 
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 public record UserInfoResponse(
         String role,

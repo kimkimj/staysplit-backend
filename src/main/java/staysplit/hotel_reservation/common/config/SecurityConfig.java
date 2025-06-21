@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.common.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import staysplit.hotel_reservation.common.jwt.JwtTokenFilter;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
 
@@ -32,6 +33,10 @@ public class SecurityConfig {
             "/oauth/**"
     };
 
+    private final String[] GET_ALLOWED_URLS = {
+            "/api/hotels/*"
+    };
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -41,8 +46,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(req -> req.requestMatchers(ALLOWED_URLS)
-                        .permitAll()
+                .authorizeHttpRequests(req -> req.requestMatchers(ALLOWED_URLS).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/hotels/list").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/hotels/*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

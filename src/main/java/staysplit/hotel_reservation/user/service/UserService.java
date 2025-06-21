@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.common.jwt.JwtTokenProvider;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 

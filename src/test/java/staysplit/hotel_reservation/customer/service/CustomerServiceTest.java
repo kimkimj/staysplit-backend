@@ -14,7 +14,7 @@ import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeReq
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 

@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.customer.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.customer.domain.dto.SocialType;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 import java.time.LocalDate;
 
