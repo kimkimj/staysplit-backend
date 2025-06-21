@@ -1,7 +1,6 @@
 package staysplit.hotel_reservation.hotel.dto.request;
 
 public record CreateHotelRequest(
-        Long providerId,
         String name,
         String address,
         String description,

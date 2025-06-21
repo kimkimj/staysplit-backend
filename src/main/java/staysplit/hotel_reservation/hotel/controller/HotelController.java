@@ -1,16 +1,15 @@
 package staysplit.hotel_reservation.hotel.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
 import staysplit.hotel_reservation.hotel.dto.request.*;
-import staysplit.hotel_reservation.hotel.dto.response.CreateHotelResponse;
-import staysplit.hotel_reservation.hotel.dto.response.GetHotelDetailResponse;
-import staysplit.hotel_reservation.hotel.dto.response.GetHotelListResponse;
-import staysplit.hotel_reservation.hotel.dto.response.UpdateHotelResponse;
+import staysplit.hotel_reservation.hotel.dto.response.*;
 import staysplit.hotel_reservation.hotel.service.HotelService;
-
-import java.util.List;
 
 
 @RestController
@@ -22,42 +21,44 @@ public class HotelController {
 
     //호텔 생성
     @PostMapping("/")
-    public Response<CreateHotelResponse> createHotel(@RequestBody CreateHotelRequest request){
-        CreateHotelResponse createHotelResponse=hotelService.createHotel(request);
+    public Response<CreateHotelResponse> createHotel(@RequestBody CreateHotelRequest request, Authentication authentication){
+        CreateHotelResponse createHotelResponse = hotelService.createHotel(request, authentication.getName());
         return Response.success(createHotelResponse);
     }
 
     //호텔 수정
-    @PatchMapping("/")
-    public Response<UpdateHotelResponse> updateHotel(UpdateHotelRequest request){
+    @PutMapping("/{hotelId}")
+    public Response<GetHotelDetailResponse> updateHotel(
+            @PathVariable Long hotelId,
+            @RequestBody UpdateHotelRequest request,
+            Authentication authentication){
 
-        UpdateHotelResponse response=hotelService.updateHotel(request);
+        GetHotelDetailResponse response = hotelService.updateHotel(hotelId, request, authentication.getName());
         return Response.success(response);
     }
 
     //호텔 상세 조회
     @GetMapping("/{hotelId}")
-    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable GetHotelDetailRequest request){
-        GetHotelDetailResponse response=hotelService.getHotelDetail(request);
+    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable Long hotelId){
+        GetHotelDetailResponse response = hotelService.getHotelDetails(hotelId);
         return Response.success(response);
     }
 
 
     //호텔 목록 조회
     @GetMapping("/list")
-    public Response<List<GetHotelListResponse>> getHotelList(GetHotelListRequest request){
-        List<GetHotelListResponse> response=hotelService.getHotelList(request);
+    public Response<Page<GetHotelListResponse>> getHotelList(@PageableDefault(size = 10) Pageable pageable) {
+        Page<GetHotelListResponse> response = hotelService.getHotelList(pageable);
         return Response.success(response);
     }
 
 
     //호텔 삭제
     @DeleteMapping("/{hotelId}")
-    public Response<String> deleteHotel(@PathVariable Long hotelId, @RequestParam Long providerId){
+    public Response<DeleteHotelResponse> deleteHotel(@PathVariable Long hotelId, Authentication authentication){
 
-        DeleteHotelRequest request=new DeleteHotelRequest(hotelId, providerId);
-        hotelService.deleteHotel(request);
-        return Response.success("호텔이 삭제되었습니다.");
+        DeleteHotelResponse response = hotelService.deleteHotel(hotelId, authentication.getName());
+        return Response.success(response);
     }
 
 }
