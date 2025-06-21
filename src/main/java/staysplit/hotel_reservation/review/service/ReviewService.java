@@ -35,7 +35,6 @@ public class ReviewService {
         return CreateReviewResponse.from(review);
     }
 
-    //FIXME:리뷰는 내 계정의 리뷰페이지에서보는건지, 호텔페이지에서 보는건지
     @Transactional(readOnly = true)
     public Page<GetReviewResponse> getReviewByUserId(Long userId, Pageable pageable){
         Page<ReviewEntity> review = reviewRepository.getReviewByUserId(userId, pageable);

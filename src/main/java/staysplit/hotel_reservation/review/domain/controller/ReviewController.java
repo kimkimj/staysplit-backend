@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
@@ -37,13 +38,13 @@ public class ReviewController {
     }
 
     @DeleteMapping("/my")
-    public Response<String> delete(Long userId, Long reviewId) {
+    public Response<String> deleteReview(Long userId, Long reviewId) {
         reviewService.deleteReview(userId, reviewId);
         return Response.success("리뷰가 삭제되었습니다.");
     }
 
-    @DeleteMapping("/my")
-    public Response<String> modify(ReviewEntity targetReview) {
+    @PutMapping()
+    public Response<String> modifyReview(ReviewEntity targetReview) {
         reviewService.modifyReview(targetReview);
         return Response.success("리뷰가 수정되었습니다.");
     }
