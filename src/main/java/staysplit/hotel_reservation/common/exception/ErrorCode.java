@@ -16,6 +16,13 @@ public enum ErrorCode {
     DUPLICATE_SOCIAL_ID(HttpStatus.CONFLICT, "이미 가입된 계정입니다."),
     PROVIDER_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 존재하는 공급자입니다"),
 
+    // Room
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 방입니다"),
+    UNAUTHORIZED_PROVIDER(HttpStatus.UNAUTHORIZED, "이 방에 대한 권한이 없습니다"),
+
+    // Hotel
+    HOTEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 호텔입니다");
+
     // Review
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
     UNAUTHORIZED_REVIEWER(HttpStatus.UNAUTHORIZED, "리뷰 작성자가 아닙니다.");
