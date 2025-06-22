@@ -31,7 +31,7 @@ public class SecurityConfig {
             "/api/customers/google/login",
             "/oauth/**",
 
-            "/api/review/**",
+            "/api/reviews/**",
     };
 
 

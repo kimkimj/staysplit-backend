@@ -7,12 +7,14 @@ import org.mockito.*;
 import org.springframework.data.domain.*;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.review.domain.dto.request.CreateReviewRequest;
 import staysplit.hotel_reservation.review.domain.dto.request.ModifyReviewRequest;
 import staysplit.hotel_reservation.review.domain.dto.response.CreateReviewResponse;
 import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
+import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,11 +64,26 @@ class ReviewServiceTest {
                 .hasMessage("이미 해당 호텔에 대한 리뷰를 작성하셨습니다.");
     }
 
+    private UserEntity createMockUser(Long userId) {
+        UserEntity user = mock(UserEntity.class);
+        when(user.getId()).thenReturn(userId);
+        return user;
+    }
+
+    private HotelEntity createMockHotel(Long hotelId) {
+        HotelEntity hotel = mock(HotelEntity.class);
+        when(hotel.getHotelId()).thenReturn(hotelId);
+        return hotel;
+    }
+
     @Test
     @DisplayName("리뷰 조회 - 사용자 ID 기준")
     void getReviewByUserId() {
+        UserEntity user = createMockUser(200L);
+        HotelEntity hotel = createMockHotel(100L);
+
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).userId(200L).hotelId(100L).content("좋음").rating(4).build();
+                .reviewId(1L).user(user).hotel(hotel).content("좋음").rating(4).build();
         Page<ReviewEntity> page = new PageImpl<>(List.of(review));
         when(reviewRepository.getReviewByUserId(eq(200L), any())).thenReturn(page);
 
@@ -78,16 +95,18 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 수정 성공")
     void modifyReviewSuccess() {
+        UserEntity user = createMockUser(200L);
+        HotelEntity hotel = createMockHotel(100L);
         // given
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).userId(200L).hotelId(100L).content("기존").rating(3).build();
+                .reviewId(1L).user(user).hotel(hotel).content("기존").rating(3).build();
 
         ModifyReviewRequest request = new ModifyReviewRequest(1L, 200L, 100L, "수정됨", 5);
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
         // when
-        GetReviewResponse response = reviewService.modifyReview(request);
+        GetReviewResponse response = reviewService.modifyReview(1L, request);
 
         // then
         assertThat(response.content()).isEqualTo("수정됨");
@@ -97,14 +116,16 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 수정 - 권한 없음 예외")
     void modifyReviewUnauthorized() {
+        UserEntity user = createMockUser(999L);
+        HotelEntity hotel = createMockHotel(100L);
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).userId(999L).hotelId(100L).content("기존").rating(3).build();
+                .reviewId(1L).user(user).hotel(hotel).content("기존").rating(3).build();
 
         ModifyReviewRequest request = new ModifyReviewRequest(1L, 200L, 100L, "수정됨", 5);
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
-        assertThatThrownBy(() -> reviewService.modifyReview(request))
+        assertThatThrownBy(() -> reviewService.modifyReview(1L, request))
                 .isInstanceOf(AppException.class)
                 .hasMessage(ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
     }
@@ -112,8 +133,10 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 삭제 성공")
     void deleteReviewSuccess() {
+        UserEntity user = createMockUser(200L);
+        HotelEntity hotel = createMockHotel(100L);
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).userId(200L).hotelId(100L).content("삭제용").rating(4).build();
+                .reviewId(1L).user(user).hotel(hotel).content("삭제용").rating(4).build();
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
@@ -125,8 +148,10 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 삭제 - 권한 없음 예외")
     void deleteReviewUnauthorized() {
+        UserEntity user = createMockUser(999L);
+        HotelEntity hotel = createMockHotel(100L);
         ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).userId(999L).hotelId(100L).content("삭제용").rating(4).build();
+                .reviewId(1L).user(user).hotel(hotel).content("삭제용").rating(4).build();
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
