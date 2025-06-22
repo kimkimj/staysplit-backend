@@ -92,7 +92,7 @@ public class OAuthService {
 //    }
 //
 //    // 구글 로그인
-public String googleLogin(RedirectDto redirectDto) {
+    public String googleLogin(RedirectDto redirectDto) {
     AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
     GoogleProfileDto googleProfileDto = googleService.getGoolgleProfile(accessTokenDto.getAccessToken());
 
