@@ -62,7 +62,7 @@ public class ReviewService {
 
     public GetReviewResponse modifyReview(Long reviewId, ModifyReviewRequest request){
         ReviewEntity review = validateReview(reviewId);
-        hasAuthority(review, request.userId(), request.reviewId());
+        hasAuthority(review, request.userId(), reviewId);
 
         review.setContent(request.content());
         review.setRating(request.rating());

@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
-    @Autowired
     private final ReviewService reviewService;
 
     @PostMapping
@@ -30,13 +29,15 @@ public class ReviewController {
     }
 
     @GetMapping("/users/{userId}")
-    public Page<GetReviewResponse> getReviewByUserId(@PathVariable Long userId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
-        return reviewService.getReviewByUserId(userId, pageable);
+    public Response<Page<GetReviewResponse>> getReviewByUserId(@PathVariable Long userId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<GetReviewResponse> review = reviewService.getReviewByUserId(userId, pageable);
+        return Response.success(review);
     }
 
     @GetMapping("/hotels/{hotelId}")
-    public Page<GetReviewResponse> getReviewByHotelId(@PathVariable Long hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
-        return reviewService.getReviewByHotelId(hotelId, pageable);
+    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Long hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<GetReviewResponse> review = reviewService.getReviewByHotelId(hotelId, pageable);
+        return Response.success(review);
     }
 
     @DeleteMapping("/{reviewId}")
