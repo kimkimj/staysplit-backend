@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import staysplit.hotel_reservation.common.jwt.JwtTokenProvider;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
 @Service

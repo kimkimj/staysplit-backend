@@ -12,12 +12,12 @@ import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
-import staysplit.hotel_reservation.room.domain.dto.request.RoomCreateRequest;
-import staysplit.hotel_reservation.room.domain.dto.request.RoomModifyRequest;
+import staysplit.hotel_reservation.room.domain.dto.request.CreateRoomRequest;
+import staysplit.hotel_reservation.room.domain.dto.request.UpdateRoomRequest;
 import staysplit.hotel_reservation.room.domain.dto.response.RoomDeleteResponse;
 import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
 
@@ -30,7 +30,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
 
-    public RoomInfoResponse createRoom(String email, RoomCreateRequest request) {
+    public RoomInfoResponse createRoom(String email, CreateRoomRequest request) {
         ProviderEntity provider = validateProvider(email);
 
         RoomEntity room = RoomEntity.builder()
@@ -48,16 +48,17 @@ public class RoomService {
         return RoomInfoResponse.from(room);
     }
 
-    public RoomInfoResponse modifyRoom(String email, RoomModifyRequest request) {
+    public RoomInfoResponse updateRoom(String email, UpdateRoomRequest request) {
         RoomEntity room = validateRoom(request.roomId());
         ProviderEntity provider = validateProvider(email);
-        if (hasAuthority(provider, room)) {
-            room.changeRoomType(request.roomType());
-            room.changeDescription(request.description());
-            room.changePrice(request.price());
-            room.changePhotoUrl(request.photoUrl());
-            room.changeMaxOccupancy(request.maxOccupancy());
+        if (!hasAuthority(provider, room)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED_PROVIDER,
+                    ErrorCode.UNAUTHORIZED_PROVIDER.getMessage());
         }
+
+        room.updateRoom(request.roomType(), request.photoUrl(), request.maxOccupancy(),
+                request.price(), request.description());
+
         return RoomInfoResponse.from(room);
     }
 

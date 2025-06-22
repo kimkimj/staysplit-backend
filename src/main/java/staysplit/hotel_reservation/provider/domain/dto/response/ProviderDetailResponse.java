@@ -2,12 +2,12 @@ package staysplit.hotel_reservation.provider.domain.dto.response;
 
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 
-public record ProviderInfoResponse(
+public record ProviderDetailResponse(
         String email
         //String hotelName
 ) {
-    public static ProviderInfoResponse from(ProviderEntity provider) {
-        return new ProviderInfoResponse(
+    public static ProviderDetailResponse from(ProviderEntity provider) {
+        return new ProviderDetailResponse(
                 provider.getUser().getEmail()
                 //provider.getHotel().getName()
         );

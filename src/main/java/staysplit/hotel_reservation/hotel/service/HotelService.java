@@ -5,18 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.hotel.dto.request.*;
-import staysplit.hotel_reservation.hotel.dto.response.CreateHotelResponse;
-import staysplit.hotel_reservation.hotel.dto.response.GetHotelDetailResponse;
-import staysplit.hotel_reservation.hotel.dto.response.GetHotelListResponse;
-import staysplit.hotel_reservation.hotel.dto.response.UpdateHotelResponse;
+import staysplit.hotel_reservation.hotel.dto.response.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import staysplit.hotel_reservation.user.repository.UserRepository;
+
 
 @Service
 @Transactional
@@ -25,9 +26,10 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
     private final ProviderRepository providerRepository;
+    private final UserRepository userRepository;
 
-    public CreateHotelResponse createHotel(CreateHotelRequest request) {
-        ProviderEntity provider = getProviderOrThrow(request.providerId());
+    public CreateHotelResponse createHotel(CreateHotelRequest request,  String providerEmail) {
+        ProviderEntity provider = validateProvider(providerEmail);
 
         HotelEntity hotel = HotelEntity.builder()
                 .provider(provider)
@@ -45,46 +47,43 @@ public class HotelService {
         return CreateHotelResponse.toDto(hotel);
     }
 
-    // 호텔 상세 조회
     @Transactional(readOnly = true)
-    public GetHotelDetailResponse getHotelDetail(GetHotelDetailRequest request) {
-        HotelEntity hotel = getHotelOrThrow(request.hotelId());
+    public GetHotelDetailResponse getHotelDetails(Long hotelId) {
+        HotelEntity hotel = getHotelOrThrow(hotelId);
         return GetHotelDetailResponse.toDto(hotel);
     }
 
-    // 호텔 목록 조회
+    // 호텔 목록 조회 - 페이징 지원
     @Transactional(readOnly = true)
-    public List<GetHotelListResponse> getHotelList(GetHotelListRequest request) {
-        List<HotelEntity> hotels = hotelRepository.findAllByHotelId(request.hotelId());
-        return hotels.stream()
-                .map(GetHotelListResponse::toDto)
-                .collect(Collectors.toList());
+    public Page<GetHotelListResponse> getHotelList(Pageable pageable) {
+        Page<HotelEntity> hotelPage = hotelRepository.findAll(pageable);
+        return hotelPage.map(GetHotelListResponse::toDto);
     }
 
-    // 호텔 정보 수정
-    public UpdateHotelResponse updateHotel(UpdateHotelRequest request) {
-        ProviderEntity provider = getProviderOrThrow(request.providerId());
-        HotelEntity hotel = getHotelOrThrow(request.hotelId());
+    public GetHotelDetailResponse updateHotel(Long hotelId, UpdateHotelRequest request, String providerEmail) {
+        ProviderEntity provider = validateProvider(providerEmail);
+        HotelEntity hotel = getHotelOrThrow(hotelId);
 
         verifyOwnership(hotel, provider);
 
         hotel.updateHotel(request);
-        return UpdateHotelResponse.toDto(hotel);
+        return GetHotelDetailResponse.toDto(hotel);
     }
 
-    // 호텔 삭제
-    public void deleteHotel(DeleteHotelRequest request) {
-        ProviderEntity provider = getProviderOrThrow(request.providerId());
-        HotelEntity hotel = getHotelOrThrow(request.hotelId());
+    public DeleteHotelResponse deleteHotel(Long hotelId, String email) {
+        ProviderEntity provider = validateProvider(email);
+        HotelEntity hotel = getHotelOrThrow(hotelId);
 
         verifyOwnership(hotel, provider);
+
         hotelRepository.delete(hotel);
+        provider.addHotel(null);
+        return new DeleteHotelResponse("호텔이 성공적으로 삭제되었습니다.", hotelId);
     }
 
-    private ProviderEntity getProviderOrThrow(Long providerId) {
-        return providerRepository.findById(providerId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.FORBIDDEN, "해당 사용자는 Provider가 아닙니다."));
+    private ProviderEntity validateProvider(String email) {
+        return providerRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 
     private HotelEntity getHotelOrThrow(Long hotelId) {

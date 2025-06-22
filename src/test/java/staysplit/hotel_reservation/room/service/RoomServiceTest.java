@@ -15,7 +15,7 @@ import staysplit.hotel_reservation.room.domain.RoomEntity;
 import staysplit.hotel_reservation.room.domain.dto.request.RoomCreateRequest;
 import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
