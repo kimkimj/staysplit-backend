@@ -40,7 +40,9 @@ public class SecurityConfig {
             "/login/oauth2/code/**",
             "/api/customers/google/login",
             "/api/customers/signup/oauth",
-            "/oauth/**"
+            "/oauth/**",
+
+            "/api/reviews/**",
     };
 
 
