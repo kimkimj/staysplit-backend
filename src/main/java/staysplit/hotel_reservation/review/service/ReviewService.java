@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
+import staysplit.hotel_reservation.customer.repository.CustomerRepository;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.review.domain.dto.request.CreateReviewRequest;
@@ -15,7 +17,7 @@ import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
 @Service
@@ -25,6 +27,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
+    private final CustomerRepository customerRepository;
 
     public CreateReviewResponse createReview(CreateReviewRequest request){
         boolean exists = reviewRepository.existsByUserIdAndHotelId(request.userId(), request.hotelId());
@@ -37,9 +40,13 @@ public class ReviewService {
         HotelEntity hotel = hotelRepository.findById(request.hotelId())
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND, "호텔을 찾을 수 없습니다."));
 
+        CustomerEntity customer = customerRepository.findById(request.userId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
+
         ReviewEntity review = ReviewEntity.builder()
                 .user(user)
                 .hotel(hotel)
+                .customer(customer)
                 .content(request.content())
                 .rating(request.rating())
                 .build();

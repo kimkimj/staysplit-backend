@@ -6,6 +6,7 @@ public record GetReviewResponse(
         Long reviewId,
         Long userId,
         Long hotelId,
+        String nickname,
         String content,
         Integer rating
         //닉네임추가
@@ -15,6 +16,7 @@ public record GetReviewResponse(
                 review.getReviewId(),
                 review.getUserId(),
                 review.getHotelId(),
+                review.getNickname(),
                 review.getContent(),
                 review.getRating()
         );

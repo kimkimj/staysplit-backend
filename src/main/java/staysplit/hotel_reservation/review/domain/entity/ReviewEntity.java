@@ -5,8 +5,9 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 import java.time.LocalDateTime;
 
@@ -24,12 +25,16 @@ public class ReviewEntity {
     private Long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
     HotelEntity hotel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nickname", nullable = false)
+    CustomerEntity customer;
 
     @Column(nullable = false)
     private String content;
@@ -62,6 +67,10 @@ public class ReviewEntity {
 
     public Long getHotelId() {
         return hotel != null ? hotel.getHotelId() : null;
+    }
+
+    public String getNickname() {
+        return customer != null ? customer.getNickname() : null;
     }
 
     public void markDeleted() {

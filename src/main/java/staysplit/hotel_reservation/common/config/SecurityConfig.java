@@ -27,7 +27,7 @@ public class SecurityConfig {
             "/api/providers/sign-up",
             "/api/users/login",
             "/api/rooms/hotels/*",
-
+            "/api/reviews/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
@@ -40,8 +40,6 @@ public class SecurityConfig {
             "/login/oauth2/code/google",
             "/api/customers/google/login",
             "/oauth/**",
-
-            "/api/reviews/**",
     };
 
 
