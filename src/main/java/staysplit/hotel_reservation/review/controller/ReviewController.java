@@ -28,9 +28,9 @@ public class ReviewController {
         return Response.success(response);
     }
 
-    @GetMapping("/users/{userId}")
-    public Response<Page<GetReviewResponse>> getReviewByUserId(@PathVariable Long userId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<GetReviewResponse> review = reviewService.getReviewByUserId(userId, pageable);
+    @GetMapping("/customers/{customerId}")
+    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Long customerId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<GetReviewResponse> review = reviewService.getReviewByCustomerId(customerId, pageable);
         return Response.success(review);
     }
 
@@ -41,8 +41,8 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    public Response<String> deleteReview(@RequestParam Long userId, @PathVariable Long reviewId) {
-        reviewService.deleteReview(userId, reviewId);
+    public Response<String> deleteReview(@RequestParam Long customerId, @PathVariable Long reviewId) {
+        reviewService.deleteReview(customerId, reviewId);
         return Response.success("리뷰가 삭제되었습니다.");
     }
 

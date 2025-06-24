@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 import java.time.LocalDateTime;
 
@@ -22,19 +21,15 @@ public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    UserEntity user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    CustomerEntity customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
     HotelEntity hotel;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nickname", nullable = false)
-    CustomerEntity customer;
 
     @Column(nullable = false)
     private String content;
@@ -61,8 +56,8 @@ public class ReviewEntity {
         this.rating = rating;
     }
 
-    public Long getUserId() {
-        return user != null ? user.getId() : null;
+    public Long geCustomerId() {
+        return customer != null ? customer.getId() : null;
     }
 
     public Long getHotelId() {

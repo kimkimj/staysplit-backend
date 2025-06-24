@@ -17,36 +17,30 @@ import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.user.domain.entity.UserEntity;
-import staysplit.hotel_reservation.user.repository.UserRepository;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
     private final CustomerRepository customerRepository;
 
     public CreateReviewResponse createReview(CreateReviewRequest request){
-        boolean exists = reviewRepository.existsByUserIdAndHotelId(request.userId(), request.hotelId());
+        boolean exists = reviewRepository.existsByUserIdAndHotelId(request.customerId(), request.hotelId());
         if (exists) {
             throw new IllegalStateException("이미 해당 호텔에 대한 리뷰를 작성하셨습니다.");
         }
-        UserEntity user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "유저를 찾을 수 없습니다."));
 
         HotelEntity hotel = hotelRepository.findById(request.hotelId())
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND, "호텔을 찾을 수 없습니다."));
 
-        CustomerEntity customer = customerRepository.findById(request.userId())
+        CustomerEntity customer = customerRepository.findById(request.customerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
 
         ReviewEntity review = ReviewEntity.builder()
-                .user(user)
-                .hotel(hotel)
                 .customer(customer)
+                .hotel(hotel)
                 .content(request.content())
                 .rating(request.rating())
                 .build();
@@ -56,8 +50,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<GetReviewResponse> getReviewByUserId(Long userId, Pageable pageable){
-        Page<ReviewEntity> review = reviewRepository.getReviewByUserId(userId, pageable);
+    public Page<GetReviewResponse> getReviewByCustomerId(Long customerId, Pageable pageable){
+        Page<ReviewEntity> review = reviewRepository.getReviewByCustomerId(customerId, pageable);
         return review.map(GetReviewResponse::from);
     }
 
@@ -69,7 +63,7 @@ public class ReviewService {
 
     public GetReviewResponse modifyReview(Long reviewId, ModifyReviewRequest request){
         ReviewEntity review = validateReview(reviewId);
-        hasAuthority(review, request.userId(), reviewId);
+        hasAuthority(review, request.customerId(), reviewId);
 
         review.setContent(request.content());
         review.setRating(request.rating());
@@ -77,9 +71,9 @@ public class ReviewService {
         return GetReviewResponse.from(review);
     }
 
-    public void deleteReview(Long userId, Long reviewId) {
+    public void deleteReview(Long customerId, Long reviewId) {
         ReviewEntity review = validateReview(reviewId);
-        hasAuthority(review, userId, reviewId);
+        hasAuthority(review, customerId, reviewId);
         review.markDeleted();
     }
 
@@ -89,8 +83,8 @@ public class ReviewService {
                         ErrorCode.REVIEW_NOT_FOUND.getMessage()));
     }
 
-    private void hasAuthority(ReviewEntity review, Long userId, Long reviewId) {
-        if (!(review.getReviewId().equals(reviewId) && review.getUser().getId().equals(userId))) {
+    private void hasAuthority(ReviewEntity review, Long customerId, Long reviewId) {
+        if (!(review.getId().equals(reviewId) && review.getCustomer().getId().equals(customerId))) {
             throw new AppException(ErrorCode.UNAUTHORIZED_REVIEWER,
                     ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
         }

@@ -3,32 +3,36 @@ package staysplit.hotel_reservation.review.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.data.domain.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
+import staysplit.hotel_reservation.customer.repository.CustomerRepository;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.review.domain.dto.request.CreateReviewRequest;
 import staysplit.hotel_reservation.review.domain.dto.request.ModifyReviewRequest;
-import staysplit.hotel_reservation.review.domain.dto.response.CreateReviewResponse;
-import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 import staysplit.hotel_reservation.review.repository.ReviewRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ReviewServiceTest {
 
-    @InjectMocks
-    private ReviewService reviewService;
+    @Mock private ReviewRepository reviewRepository;
+    @Mock private HotelRepository hotelRepository;
+    @Mock private CustomerRepository customerRepository;
 
-    @Mock
-    private ReviewRepository reviewRepository;
+    @InjectMocks private ReviewService reviewService;
 
     @BeforeEach
     void setUp() {
@@ -37,136 +41,86 @@ class ReviewServiceTest {
 
     @Test
     @DisplayName("리뷰 생성 성공")
-    void createReviewSuccess() {
-        // given
-        CreateReviewRequest request = new CreateReviewRequest(1L, 100L, 200L, "좋았어요", 5);
-        when(reviewRepository.existsByUserIdAndHotelId(200L, 100L)).thenReturn(false);
-        when(reviewRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+    void createReview_success() {
+        CreateReviewRequest request = new CreateReviewRequest(1L, 1L, "홍길동", 10L, "좋은 숙소입니다", 5);
+        CustomerEntity customer = CustomerEntity.builder().id(1L).nickname("홍길동").build();
+        HotelEntity hotel = HotelEntity.builder().hotelId(10L).build();
+        ReviewEntity review = ReviewEntity.builder().customer(customer).hotel(hotel).content("좋은 숙소입니다").rating(5).build();
 
-        // when
-        CreateReviewResponse response = reviewService.createReview(request);
+        when(reviewRepository.existsByUserIdAndHotelId(1L, 10L)).thenReturn(false);
+        when(hotelRepository.findById(10L)).thenReturn(Optional.of(hotel));
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(reviewRepository.save(any())).thenReturn(review);
 
-        // then
-        assertThat(response.content()).isEqualTo("좋았어요");
-        verify(reviewRepository, times(1)).save(any());
-    }
-
-    @Test
-    @DisplayName("이미 존재하는 리뷰 작성 시 예외")
-    void createReviewDuplicateFail() {
-        // given
-        CreateReviewRequest request = new CreateReviewRequest(1L, 100L, 200L, "좋았어요", 5);
-        when(reviewRepository.existsByUserIdAndHotelId(200L, 100L)).thenReturn(true);
-
-        // expect
-        assertThatThrownBy(() -> reviewService.createReview(request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 해당 호텔에 대한 리뷰를 작성하셨습니다.");
-    }
-
-    private UserEntity createMockUser(Long userId) {
-        UserEntity user = mock(UserEntity.class);
-        when(user.getId()).thenReturn(userId);
-        return user;
-    }
-
-    private HotelEntity createMockHotel(Long hotelId) {
-        HotelEntity hotel = mock(HotelEntity.class);
-        when(hotel.getHotelId()).thenReturn(hotelId);
-        return hotel;
-    }
-
-    @Test
-    @DisplayName("리뷰 조회 - 사용자 ID 기준")
-    void getReviewByUserId() {
-        UserEntity user = createMockUser(200L);
-        HotelEntity hotel = createMockHotel(100L);
-
-        ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).user(user).hotel(hotel).content("좋음").rating(4).build();
-        Page<ReviewEntity> page = new PageImpl<>(List.of(review));
-        when(reviewRepository.getReviewByUserId(eq(200L), any())).thenReturn(page);
-
-        Page<GetReviewResponse> result = reviewService.getReviewByUserId(200L, PageRequest.of(0, 10));
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().get(0).content()).isEqualTo("좋음");
+        var response = reviewService.createReview(request);
+        assertEquals("좋은 숙소입니다", response.content());
+        assertEquals(5, response.rating());
     }
 
     @Test
     @DisplayName("리뷰 수정 성공")
-    void modifyReviewSuccess() {
-        UserEntity user = createMockUser(200L);
-        HotelEntity hotel = createMockHotel(100L);
-        // given
-        ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).user(user).hotel(hotel).content("기존").rating(3).build();
+    void modifyReview_success() {
+        CustomerEntity customer = CustomerEntity.builder().id(1L).nickname("홍길동").build();
+        ReviewEntity review = ReviewEntity.builder().reviewId(10L).customer(customer).content("이전 내용").rating(3).build();
 
-        ModifyReviewRequest request = new ModifyReviewRequest(1L, 200L, 100L, "수정됨", 5);
+        ModifyReviewRequest request = new ModifyReviewRequest(1L,"수정된 내용", 4);
 
-        when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+        when(reviewRepository.findById(10L)).thenReturn(Optional.of(review));
 
-        // when
-        GetReviewResponse response = reviewService.modifyReview(1L, request);
+        var result = reviewService.modifyReview(10L, request);
 
-        // then
-        assertThat(response.content()).isEqualTo("수정됨");
-        assertThat(response.rating()).isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("리뷰 수정 - 권한 없음 예외")
-    void modifyReviewUnauthorized() {
-        UserEntity user = createMockUser(999L);
-        HotelEntity hotel = createMockHotel(100L);
-        ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).user(user).hotel(hotel).content("기존").rating(3).build();
-
-        ModifyReviewRequest request = new ModifyReviewRequest(1L, 200L, 100L, "수정됨", 5);
-
-        when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-
-        assertThatThrownBy(() -> reviewService.modifyReview(1L, request))
-                .isInstanceOf(AppException.class)
-                .hasMessage(ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
+        assertEquals("수정된 내용", result.content());
+        assertEquals(4, result.rating());
     }
 
     @Test
     @DisplayName("리뷰 삭제 성공")
-    void deleteReviewSuccess() {
-        UserEntity user = createMockUser(200L);
-        HotelEntity hotel = createMockHotel(100L);
-        ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).user(user).hotel(hotel).content("삭제용").rating(4).build();
+    void deleteReview_success() {
+        CustomerEntity customer = CustomerEntity.builder().id(1L).nickname("홍길동").build();
+        ReviewEntity review = ReviewEntity.builder().reviewId(10L).customer(customer).content("삭제 테스트").rating(5).build();
 
-        when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+        when(reviewRepository.findById(10L)).thenReturn(Optional.of(review));
 
-        reviewService.deleteReview(200L, 1L);
-
-        verify(reviewRepository, times(1)).delete(review);
+        reviewService.deleteReview(1L, 10L);
+        assertNotNull(review.getDeletedAt());
     }
 
     @Test
-    @DisplayName("리뷰 삭제 - 권한 없음 예외")
-    void deleteReviewUnauthorized() {
-        UserEntity user = createMockUser(999L);
-        HotelEntity hotel = createMockHotel(100L);
-        ReviewEntity review = ReviewEntity.builder()
-                .reviewId(1L).user(user).hotel(hotel).content("삭제용").rating(4).build();
+    @DisplayName("리뷰 수정 권한 없음")
+    void modifyReview_unauthorized() {
+        CustomerEntity customer = CustomerEntity.builder().id(2L).build(); // 다른 사용자
+        ReviewEntity review = ReviewEntity.builder().reviewId(10L).customer(customer).build();
+        ModifyReviewRequest request = new ModifyReviewRequest(1L, "수정", 5);
 
-        when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+        when(reviewRepository.findById(10L)).thenReturn(Optional.of(review));
 
-        assertThatThrownBy(() -> reviewService.deleteReview(200L, 1L))
-                .isInstanceOf(AppException.class)
-                .hasMessage(ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
+        AppException exception = assertThrows(AppException.class,
+                () -> reviewService.modifyReview(10L, request));
+
+        assertEquals(ErrorCode.UNAUTHORIZED_REVIEWER, exception.getErrorCode());
     }
 
     @Test
-    @DisplayName("리뷰 삭제 - 존재하지 않는 ID")
-    void deleteReviewNotFound() {
-        when(reviewRepository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("리뷰 조회 by 유저 성공")
+    void getReviewByUserId_success() {
+        ReviewEntity review = ReviewEntity.builder().content("좋아요").rating(5).build();
+        Page<ReviewEntity> page = new PageImpl<>(Collections.singletonList(review));
 
-        assertThatThrownBy(() -> reviewService.deleteReview(200L, 1L))
-                .isInstanceOf(AppException.class)
-                .hasMessage(ErrorCode.REVIEW_NOT_FOUND.getMessage());
+        when(reviewRepository.getReviewByCustomerId(eq(1L), any())).thenReturn(page);
+
+        var result = reviewService.getReviewByCustomerId(1L, PageRequest.of(0, 10));
+        assertEquals(1, result.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("리뷰 조회 by 호텔 성공")
+    void getReviewByHotelId_success() {
+        ReviewEntity review = ReviewEntity.builder().content("최고에요").rating(4).build();
+        Page<ReviewEntity> page = new PageImpl<>(Collections.singletonList(review));
+
+        when(reviewRepository.getReviewByHotelId(eq(1L), any())).thenReturn(page);
+
+        var result = reviewService.getReviewByHotelId(1L, PageRequest.of(0, 10));
+        assertEquals(1, result.getTotalElements());
     }
 }

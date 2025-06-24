@@ -17,9 +17,9 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     @Query("SELECT r FROM ReviewEntity r WHERE r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL")
     Page<ReviewEntity> getReviewByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
 
-    @Query("SELECT r FROM ReviewEntity r WHERE r.user.id = :userId AND r.deletedAt IS NULL")
-    Page<ReviewEntity> getReviewByUserId(@Param("userId") Long userId, Pageable pageable);
+    @Query("SELECT r FROM ReviewEntity r WHERE r.customer.id = :customerId AND r.deletedAt IS NULL")
+    Page<ReviewEntity> getReviewByCustomerId(@Param("customerId") Long customerId, Pageable pageable);
 
-    @Query("SELECT COUNT(r) > 0 FROM ReviewEntity r WHERE r.user.id = :userId AND r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL")
-    boolean existsByUserIdAndHotelId(@Param("userId") Long userId, @Param("hotelId") Long hotelId);
+    @Query("SELECT COUNT(r) > 0 FROM ReviewEntity r WHERE r.customer.id = :customerId AND r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL")
+    boolean existsByUserIdAndHotelId(@Param("customerId") Long customerId, @Param("hotelId") Long hotelId);
 }
