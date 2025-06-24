@@ -1,13 +1,13 @@
-package staysplit.hotel_reservation.cart.controller;
+package staysplit.hotel_reservation.cartItem.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import staysplit.hotel_reservation.cart.domain.dto.request.CreateCartItemRequest;
-import staysplit.hotel_reservation.cart.domain.dto.request.UpdateCartItemQuantityRequest;
-import staysplit.hotel_reservation.cart.domain.dto.response.CartItemDetailResponse;
-import staysplit.hotel_reservation.cart.service.CartItemService;
+import staysplit.hotel_reservation.cartItem.domain.dto.request.CreateCartItemRequest;
+import staysplit.hotel_reservation.cartItem.domain.dto.request.UpdateCartItemQuantityRequest;
+import staysplit.hotel_reservation.cartItem.domain.dto.response.CartItemDetailResponse;
+import staysplit.hotel_reservation.cartItem.service.CartItemService;
 import staysplit.hotel_reservation.common.entity.Response;
 
 @RestController

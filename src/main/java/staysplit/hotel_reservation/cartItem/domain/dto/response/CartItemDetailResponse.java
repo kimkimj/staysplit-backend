@@ -1,9 +1,8 @@
-package staysplit.hotel_reservation.cart.domain.dto.response;
+package staysplit.hotel_reservation.cartItem.domain.dto.response;
 
-import staysplit.hotel_reservation.cart.domain.entity.CartItemEntity;
+import staysplit.hotel_reservation.cartItem.domain.entitiy.CartItemEntity;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public record CartItemDetailResponse(
         Long cartId,

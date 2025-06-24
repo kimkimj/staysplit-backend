@@ -2,6 +2,7 @@ package staysplit.hotel_reservation.cart.domain.dto.response;
 
 
 import staysplit.hotel_reservation.cart.domain.entity.CartEntity;
+import staysplit.hotel_reservation.cartItem.domain.dto.response.CartItemDetailResponse;
 
 import java.util.List;
 

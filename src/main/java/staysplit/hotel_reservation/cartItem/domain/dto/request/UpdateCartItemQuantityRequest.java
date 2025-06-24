@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.cart.domain.dto.request;
+package staysplit.hotel_reservation.cartItem.domain.dto.request;
 
 import java.time.LocalDate;
 

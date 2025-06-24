@@ -1,15 +1,14 @@
-package staysplit.hotel_reservation.cart.service;
+package staysplit.hotel_reservation.cartItem.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import staysplit.hotel_reservation.cart.domain.dto.request.CreateCartItemRequest;
-import staysplit.hotel_reservation.cart.domain.dto.response.CartDetailResponse;
-import staysplit.hotel_reservation.cart.domain.dto.response.CartItemDetailResponse;
+import staysplit.hotel_reservation.cart.service.CartValidator;
+import staysplit.hotel_reservation.cartItem.domain.dto.request.CreateCartItemRequest;
+import staysplit.hotel_reservation.cartItem.domain.dto.response.CartItemDetailResponse;
 import staysplit.hotel_reservation.cart.domain.entity.CartEntity;
-import staysplit.hotel_reservation.cart.domain.entity.CartItemEntity;
+import staysplit.hotel_reservation.cartItem.domain.entitiy.CartItemEntity;
 import staysplit.hotel_reservation.cart.repository.CartItemRepository;
-import staysplit.hotel_reservation.cart.repository.CartRepository;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;

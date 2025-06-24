@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.cart.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import staysplit.hotel_reservation.cart.domain.entity.CartEntity;
-import staysplit.hotel_reservation.cart.domain.entity.CartItemEntity;
+import staysplit.hotel_reservation.cartItem.domain.entitiy.CartItemEntity;
 import staysplit.hotel_reservation.cart.repository.CartItemRepository;
 import staysplit.hotel_reservation.cart.repository.CartRepository;
 import staysplit.hotel_reservation.common.exception.AppException;

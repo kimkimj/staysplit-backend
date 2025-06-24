@@ -2,6 +2,7 @@ package staysplit.hotel_reservation.cart.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import staysplit.hotel_reservation.cartItem.domain.entitiy.CartItemEntity;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 
 import java.util.ArrayList;

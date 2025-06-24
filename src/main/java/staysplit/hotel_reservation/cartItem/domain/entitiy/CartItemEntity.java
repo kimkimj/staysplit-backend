@@ -1,11 +1,11 @@
-package staysplit.hotel_reservation.cart.domain.entity;
+package staysplit.hotel_reservation.cartItem.domain.entitiy;
 
 import jakarta.persistence.*;
 import lombok.*;
+import staysplit.hotel_reservation.cart.domain.entity.CartEntity;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
