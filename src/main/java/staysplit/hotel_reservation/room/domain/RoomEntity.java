@@ -43,23 +43,4 @@ public class RoomEntity {
         this.description = description;
     }
 
-    public void changeRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public void changePhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public void changePrice(Integer price) {
-        this.price = price;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
-    }
-
-    public void changeMaxOccupancy(Integer maxOccupancy) {
-        this.maxOccupancy = maxOccupancy;
-    }
 }
