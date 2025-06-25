@@ -71,7 +71,7 @@ public class CartItemService {
         }
 
         // if it is a new room and chek in checkout date, create a new entity
-        // TODO: Reservation 테이블을 보고 checkin checkout와 겹치는 방 수를 확인 후 남아있는 방 수량을 개산한 후
+        // TODO: Reservation 테이블을 보고 checkin checkout와 겹치는 방 수를 확인 후 남아있는 방 수량을 개산한 후 room.quantity에서 수량 제거
         // 요청된 수량과 같거나 많으면 허락
         CartItemEntity cartItem = CartItemEntity.builder()
                 .cart(cart)
