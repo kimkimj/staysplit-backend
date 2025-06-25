@@ -27,22 +27,20 @@ public class SecurityConfig {
             "/api/providers/sign-up",
             "/api/users/login",
             "/api/rooms/hotels/*",
-
+            "/api/reviews/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
             "/api/rooms/*",
+            "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
             "/login/oauth2/code/**",
             "/api/customers/google/login",
-            "/api/customers/signup/oauth",
             "/oauth/**",
-
-            "/api/reviews/**",
     };
 
 
