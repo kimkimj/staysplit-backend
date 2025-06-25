@@ -37,9 +37,12 @@ public class SecurityConfig {
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
-            "/login/oauth2/code/google",
+            "/login/oauth2/code/**",
             "/api/customers/google/login",
-            "/oauth/**"
+            "/api/customers/signup/oauth",
+            "/oauth/**",
+
+            "/api/reviews/**",
     };
 
 
