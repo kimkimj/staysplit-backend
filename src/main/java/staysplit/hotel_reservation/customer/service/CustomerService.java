@@ -54,13 +54,12 @@ public class CustomerService {
         return CustomerDetailsResponse.from(customer);
     }
 
-    // 내 프로필
     public CustomerDetailsResponse getMyProfile(String email) {
         CustomerEntity customer = validateCustomer(email);
         return CustomerDetailsResponse.from(customer);
     }
 
-    public CustomerDetailsResponse findCustomerById(Long id) {
+    public CustomerDetailsResponse findCustomerById(Integer id) {
         CustomerEntity customer = validateCustomer(id);
         return CustomerDetailsResponse.from(customer);
     }
@@ -74,22 +73,12 @@ public class CustomerService {
         return CustomerDetailsResponse.from(customer);
     }
 
-//    // 두번째 이메일은 Authentication 객체에 있는 값
-//    public CustomerInfoResponse changeEmail(EmailChangeRequest emailChangeRequest, String email) {
-//        CustomerEntity customer = validateCustomer(email);
-//        if (customerRepository.existsByEmail(emailChangeRequest.getEmail())) {
-//            throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
-//        }
-//        customer.changeEmail(emailChangeRequest.getEmail());
-//        return CustomerInfoResponse.from(customer);
-//    }
-
     public void delete(String email) {
         CustomerEntity customer = validateCustomer(email);
         customerRepository.delete(customer);
     }
 
-    private CustomerEntity validateCustomer(Long id) {
+    private CustomerEntity validateCustomer(Integer id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }
@@ -100,7 +89,6 @@ public class CustomerService {
 
         return customerRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
-
 //        return customerRepository.findByEmail(email)
 //                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }
