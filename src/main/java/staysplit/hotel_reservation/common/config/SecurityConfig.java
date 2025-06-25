@@ -33,11 +33,12 @@ public class SecurityConfig {
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
             "/api/rooms/*",
+            "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
-            "/login/oauth2/code/google",
+            "/login/oauth2/code/**",
             "/api/customers/google/login",
             "/oauth/**",
     };
