@@ -19,4 +19,3 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
 
 
 }
-d
