@@ -1,6 +1,8 @@
 package staysplit.hotel_reservation.customer.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.oauth.service.GoogleService;
@@ -90,4 +92,11 @@ public class CustomerController {
 //        return Response.success(response);
 //    }
 
+
+    @GetMapping("/all")
+    public Response<Page<CustomerDetailsResponse>> findAllCustomers(Pageable pageable) {
+        Page<CustomerDetailsResponse> allCustomers = customerService.getAllCustomers(pageable);
+        return Response.success(allCustomers);
+    }
 }
+
