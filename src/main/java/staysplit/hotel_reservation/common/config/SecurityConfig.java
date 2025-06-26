@@ -33,6 +33,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
             "/api/rooms/*",
+            "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
@@ -58,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .requestMatchers(HttpMethod.PUT, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .requestMatchers(HttpMethod.DELETE, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
+                        .requestMatchers(HttpMethod.PUT, "/api/reviews/*").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/reviews/*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
