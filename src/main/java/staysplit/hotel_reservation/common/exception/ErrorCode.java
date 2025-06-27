@@ -30,8 +30,6 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "징바구니에 존재하지 않는 상품입니다");
 
 
-
-
     private HttpStatus httpStatus;
     private String message;
 

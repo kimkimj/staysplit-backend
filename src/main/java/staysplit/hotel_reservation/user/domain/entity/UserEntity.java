@@ -13,7 +13,7 @@ import staysplit.hotel_reservation.user.domain.enums.Role;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE user_entity SET deleted_at = current_timestamp WHERE user_id = ?")
-@SQLRestriction("deleted_at = null")
+@SQLRestriction("deleted_at IS NULL")
 public class UserEntity extends BaseEntity {
 
     @Id
@@ -40,7 +40,6 @@ public class UserEntity extends BaseEntity {
         this.email = email;
     }
 
-    // TODO: create a method in service
     public void changePassword(String hashedPassword) {
         this.password = hashedPassword;
     }

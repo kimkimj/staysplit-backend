@@ -27,7 +27,7 @@ public class UserController {
 
 
     // 비밀 번호 변경
-    @PutMapping("/pw")
+    @PutMapping("/pwd")
     public Response<String> changePassword(@RequestBody PasswordUpdateRequest request,
                                            Authentication authentication) {
         String response = userService.changePassword(request, authentication.getName());
