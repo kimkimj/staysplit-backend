@@ -27,8 +27,11 @@ public enum ErrorCode {
 
     // Cart
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다"),
-    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "징바구니에 존재하지 않는 상품입니다");
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "징바구니에 존재하지 않는 상품입니다"),
 
+    // Photo
+    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다."),
+    INVALID_PHOTO_TYPE(HttpStatus.UNAUTHORIZED, "associatedEntity로 room 이나 hotel 중 하나를 입력해주세요.");
 
     private HttpStatus httpStatus;
     private String message;

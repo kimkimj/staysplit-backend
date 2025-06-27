@@ -1,8 +1,10 @@
 package staysplit.hotel_reservation.hotel.dto.response;
 
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.photo.domain.dto.response.PhotoDetailResponse;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record GetHotelDetailResponse(
         Long hotelId,
@@ -14,7 +16,7 @@ public record GetHotelDetailResponse(
         Integer starLevel,
         double rating,
         Integer reviewCount,
-        String imageUrl
+        List<PhotoDetailResponse> hotelPhotos
 ) {
     public static GetHotelDetailResponse toDto(HotelEntity hotel) {
         return new GetHotelDetailResponse(
@@ -27,7 +29,9 @@ public record GetHotelDetailResponse(
                 hotel.getStarLevel(),
                 hotel.getRating(),
                 hotel.getReviewCount(),
-                hotel.getImageUrl()
+                hotel.getHotelPhotos().stream()
+                        .map(PhotoDetailResponse::from)
+                        .toList()
         );
     }
 }

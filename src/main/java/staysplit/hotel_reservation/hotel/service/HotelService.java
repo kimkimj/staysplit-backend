@@ -38,7 +38,6 @@ public class HotelService {
                 .description(request.description())
                 .starLevel(request.starLevel())
                 .rating(request.rating())
-                .imageUrl(request.imageUrl())
                 .build();
 
         provider.addHotel(hotel);

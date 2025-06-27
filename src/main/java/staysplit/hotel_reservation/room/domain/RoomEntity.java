@@ -38,8 +38,11 @@ public class RoomEntity {
     private String description;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhotoEntity> roomPhotos = new ArrayList<>();
+
+    @OneToOne
+    private PhotoEntity mainPhoto;
 
     public void updateRoom(String roomType, Integer maxOccupancy,
                            Integer price, String description, Integer quantity) {
@@ -48,6 +51,10 @@ public class RoomEntity {
         this.maxOccupancy = maxOccupancy;
         this.price = price;
         this.description = description;
+    }
+
+    public void changeMainPhoto(PhotoEntity mainPhoto) {
+        this.mainPhoto = mainPhoto;
     }
 
 }

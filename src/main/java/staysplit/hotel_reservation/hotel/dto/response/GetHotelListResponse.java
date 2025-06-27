@@ -9,7 +9,7 @@ public record GetHotelListResponse(
         Integer starLevel,
         double rating,
         Integer reviewCount,
-        String imageUrl
+        String getMainImagePath
 ) {
     public static GetHotelListResponse toDto(HotelEntity hotel) {
         return new GetHotelListResponse(
@@ -19,7 +19,7 @@ public record GetHotelListResponse(
                 hotel.getStarLevel(),
                 hotel.getRating(),
                 hotel.getReviewCount(),
-                hotel.getImageUrl()
+                hotel.getMainPhoto().getStoredFileName()
         );
     }
 }

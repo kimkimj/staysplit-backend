@@ -1,91 +1,47 @@
 package staysplit.hotel_reservation.photo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
-import staysplit.hotel_reservation.photo.domain.enums.DisplayOrder;
 import staysplit.hotel_reservation.photo.repository.PhotoRepository;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PhotoUploadService {
-
-    @Value("${file.dir}")
-    private String directoryForSavedPhotos;
-
+public class PhotoService {
     private final PhotoRepository photoRepository;
     private final ProviderRepository providerRepository;
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
 
-    public void saveFile(MultipartFile multipartFile, String entityType,
-                         Long entityId, String email) throws IOException {
-
+    public void changeMainPhoto(Integer photoId, String associatedEntity, String email) {
         ProviderEntity provider = validateProvider(email);
+        PhotoEntity photo = validatePhotoById(photoId);
+        photo.makeMainPhoto();
 
-        String originalFilename = multipartFile.getOriginalFilename();
-        String storedFileName = createStoredFileName(originalFilename);
-
-        multipartFile.transferTo(new File(getFullPath(storedFileName)));
-
-        PhotoEntity photo;
-        if (entityType.equals("hotel")) {
-
-            HotelEntity hotel = validateHotelById(entityId);
-            hasAuthorityToHotel(provider, hotel);
-
-            String key = "hotels/" + storedFileName;
-
-            photo = PhotoEntity.builder()
-                    .uploadFileName(originalFilename)
-                    .storedFileName(storedFileName)
-                    .hotel(hotel)
-                    .build();
-
+        if (associatedEntity.equals("hotel")) {
+            HotelEntity hotel = photo.getHotel();
+            hotel.changeMainPhoto(photo);
+        } else if (associatedEntity.equals("room")){
+            RoomEntity room = photo.getRoom();
+            room.changeMainPhoto(photo);
         } else {
-            RoomEntity room = validateRoomById(entityId);
-            hasAuthorityToRoom(provider, room);
-
-            String key = "rooms/"  + storedFileName;
-
-            photo = PhotoEntity.builder()
-                    .uploadFileName(originalFilename)
-                    .storedFileName(storedFileName)
-                    .room(room)
-                    .build();
+            throw new AppException(ErrorCode.INVALID_PHOTO_TYPE, ErrorCode.INVALID_PHOTO_TYPE.getMessage());
         }
-        photoRepository.save(photo);
     }
 
-    private String getFullPath(String filename) {
-        return directoryForSavedPhotos + filename;
-    }
-
-    private String createStoredFileName(String originalFileName) {
-        String extension = extractExtension(originalFileName);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + extension;
-    }
-
-    private String extractExtension(String originalFileName) {
-        int index = originalFileName.lastIndexOf(".");
-        return originalFileName.substring(index + 1);
+    private PhotoEntity validatePhotoById(Integer photoId) {
+        return photoRepository.findById(photoId)
+                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND, ErrorCode.PHOTO_NOT_FOUND.getMessage()));
     }
 
     private void hasAuthorityToHotel(ProviderEntity provider, HotelEntity hotel) {
@@ -114,5 +70,4 @@ public class PhotoUploadService {
         return roomRepository.findById(roomId)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND, ErrorCode.ROOM_NOT_FOUND.getMessage()));
     }
-
 }

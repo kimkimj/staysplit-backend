@@ -40,8 +40,11 @@ public class HotelEntity {
     private Integer reviewCount = 0; //리뷰 수
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhotoEntity> hotelPhotos = new ArrayList<>();
+
+    @OneToOne
+    private PhotoEntity mainPhoto;
 
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
@@ -51,6 +54,10 @@ public class HotelEntity {
         this.description = request.description();
         this.starLevel = request.starLevel();
         this.rating = request.rating();
+    }
+
+    public void changeMainPhoto(PhotoEntity mainPhoto) {
+        this.mainPhoto = mainPhoto;
     }
 
 }

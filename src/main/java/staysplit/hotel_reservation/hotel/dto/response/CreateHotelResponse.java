@@ -8,8 +8,7 @@ public record CreateHotelResponse(
         String address,
         String description,
         Integer starLevel,
-        double rating,
-        String imageUrl
+        double rating
 ) {
     public static CreateHotelResponse toDto(HotelEntity hotel) {
         return new CreateHotelResponse(
@@ -18,8 +17,7 @@ public record CreateHotelResponse(
                 hotel.getAddress(),
                 hotel.getDescription(),
                 hotel.getStarLevel(),
-                hotel.getRating(),
-                hotel.getImageUrl()
+                hotel.getRating()
         );
     }
 }

@@ -32,9 +32,6 @@ public class PhotoEntity {
     private HotelEntity hotel;
 
     @Column(nullable = false)
-    private String path;
-
-    @Column(nullable = false)
     private String uploadFileName;
 
     @Column(nullable = false)
@@ -47,4 +44,16 @@ public class PhotoEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    public void makeMainPhoto() {
+        this.displayOrder = DisplayOrder.MAIN;
+    }
+
+    public void makeRegularPhoto() {
+        this.displayOrder = DisplayOrder.PHOTOS;
+    }
+
+    public boolean isMain() {
+        return this.displayOrder == DisplayOrder.MAIN;
+    }
 }
+
