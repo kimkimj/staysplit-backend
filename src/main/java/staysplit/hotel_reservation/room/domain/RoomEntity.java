@@ -7,6 +7,7 @@ import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -41,8 +42,6 @@ public class RoomEntity {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhotoEntity> roomPhotos = new ArrayList<>();
 
-    @OneToOne
-    private PhotoEntity mainPhoto;
 
     public void updateRoom(String roomType, Integer maxOccupancy,
                            Integer price, String description, Integer quantity) {
@@ -53,8 +52,10 @@ public class RoomEntity {
         this.description = description;
     }
 
-    public void changeMainPhoto(PhotoEntity mainPhoto) {
-        this.mainPhoto = mainPhoto;
+    // 메인 사진 가져오기
+    public Optional<PhotoEntity> getMainPhoto() {
+        return this.roomPhotos.stream()
+                .filter(PhotoEntity::isMain)
+                .findFirst();
     }
-
 }

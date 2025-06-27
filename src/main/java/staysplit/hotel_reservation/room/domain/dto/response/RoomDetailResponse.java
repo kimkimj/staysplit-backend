@@ -1,6 +1,9 @@
 package staysplit.hotel_reservation.room.domain.dto.response;
 
+import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
+
+import java.util.List;
 
 public record RoomDetailResponse(
         Long hotelId,
@@ -9,7 +12,8 @@ public record RoomDetailResponse(
         String roomType,
         Integer quantity,
         Integer maxOccupancy,
-        Integer price
+        Integer price,
+        List<String> imagePaths
 ) {
     public static RoomDetailResponse from(RoomEntity room) {
         return new RoomDetailResponse(room.getHotel().getHotelId(),
@@ -18,6 +22,10 @@ public record RoomDetailResponse(
                 room.getRoomType(),
                 room.getQuantity(),
                 room.getMaxOccupancy(),
-                room.getPrice());
+                room.getPrice(),
+                room.getRoomPhotos().stream()
+                        .map(PhotoEntity::getStoredFileName)
+                        .toList()
+        );
     }
 }

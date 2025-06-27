@@ -34,7 +34,7 @@ public class PhotoEntity {
     @Column(nullable = false)
     private String uploadFileName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String storedFileName;
 
     @Enumerated(EnumType.STRING)

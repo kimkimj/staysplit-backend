@@ -35,7 +35,6 @@ public class RoomService {
 
         RoomEntity room = RoomEntity.builder()
                 .hotel(provider.getHotel())
-                .photoUrl(request.photoUrl())
                 .roomType(request.roomType())
                 .quantity(request.quantity())
                 .price(request.price())

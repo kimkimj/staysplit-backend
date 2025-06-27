@@ -26,17 +26,25 @@ public class PhotoService {
     public void changeMainPhoto(Integer photoId, String associatedEntity, String email) {
         ProviderEntity provider = validateProvider(email);
         PhotoEntity photo = validatePhotoById(photoId);
-        photo.makeMainPhoto();
 
         if (associatedEntity.equals("hotel")) {
             HotelEntity hotel = photo.getHotel();
-            hotel.changeMainPhoto(photo);
+
+            if (hotel.getMainPhoto().isPresent()) {
+                hotel.getMainPhoto().get().makeRegularPhoto();
+            }
+
         } else if (associatedEntity.equals("room")){
             RoomEntity room = photo.getRoom();
-            room.changeMainPhoto(photo);
+
+            if (room.getMainPhoto().isPresent()) {
+                room.getMainPhoto().get().makeRegularPhoto();
+            }
+
         } else {
             throw new AppException(ErrorCode.INVALID_PHOTO_TYPE, ErrorCode.INVALID_PHOTO_TYPE.getMessage());
         }
+        photo.makeMainPhoto();
     }
 
     private PhotoEntity validatePhotoById(Integer photoId) {

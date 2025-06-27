@@ -7,9 +7,6 @@ import jakarta.validation.constraints.Positive;
 
 public record CreateRoomRequest(
 
-        @NotBlank(message = "사진 파일명을 입력해 주세요.")
-        String photoUrl,
-
         @NotBlank(message = "객실 설명을 입력해 주세요.")
         String description,
 

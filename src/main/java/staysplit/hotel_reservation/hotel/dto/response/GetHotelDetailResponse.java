@@ -1,7 +1,7 @@
 package staysplit.hotel_reservation.hotel.dto.response;
 
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.photo.domain.dto.response.PhotoDetailResponse;
+import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,9 +16,16 @@ public record GetHotelDetailResponse(
         Integer starLevel,
         double rating,
         Integer reviewCount,
-        List<PhotoDetailResponse> hotelPhotos
+        String mainImagePath,
+        List<String> hotelImagePaths
 ) {
+
     public static GetHotelDetailResponse toDto(HotelEntity hotel) {
+
+        String mainImagePath = hotel.getMainPhoto()
+                .map(PhotoEntity::getStoredFileName)
+                .orElse(null);
+
         return new GetHotelDetailResponse(
                 hotel.getHotelId(),
                 hotel.getName(),
@@ -29,9 +36,9 @@ public record GetHotelDetailResponse(
                 hotel.getStarLevel(),
                 hotel.getRating(),
                 hotel.getReviewCount(),
+                mainImagePath,
                 hotel.getHotelPhotos().stream()
-                        .map(PhotoDetailResponse::from)
-                        .toList()
-        );
+                        .map(PhotoEntity::getStoredFileName)
+                        .toList());
     }
 }
