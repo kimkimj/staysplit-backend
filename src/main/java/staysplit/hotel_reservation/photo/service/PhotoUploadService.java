@@ -26,7 +26,7 @@ import java.util.UUID;
 public class PhotoUploadService {
 
     @Value("${file.dir}")
-    private String fileDir;
+    private String directoryForSavedPhotos;
 
     private final PhotoRepository photoRepository;
     private final ProviderRepository providerRepository;
@@ -75,7 +75,7 @@ public class PhotoUploadService {
     }
 
     private String getFullPath(String filename) {
-        return fileDir + filename;
+        return directoryForSavedPhotos + filename;
     }
 
     private String createStoredFileName(String originalFileName) {
@@ -96,7 +96,7 @@ public class PhotoUploadService {
     }
 
     private void hasAuthorityToRoom(ProviderEntity provider, RoomEntity room) {
-        if (room.getHotel().getProvider().getId().equals(provider.getId())) {
+        if (!room.getHotel().getProvider().getId().equals(provider.getId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED_PROVIDER, ErrorCode.UNAUTHORIZED_PROVIDER.getMessage());
         }
     }

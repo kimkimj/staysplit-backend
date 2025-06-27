@@ -3,9 +3,12 @@ package staysplit.hotel_reservation.hotel.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.hotel.dto.request.UpdateHotelRequest;
+import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,7 +38,9 @@ public class HotelEntity {
 
     @Builder.Default
     private Integer reviewCount = 0; //리뷰 수
-    private String imageUrl; //메인 이미지
+
+    @Builder.Default
+    private List<PhotoEntity> hotelPhotos = new ArrayList<>();
 
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
@@ -45,7 +50,6 @@ public class HotelEntity {
         this.description = request.description();
         this.starLevel = request.starLevel();
         this.rating = request.rating();
-        this.imageUrl = request.imageUrl();
     }
 
 }
