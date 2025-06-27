@@ -57,7 +57,7 @@ public class RoomService {
                     ErrorCode.UNAUTHORIZED_PROVIDER.getMessage());
         }
 
-        room.updateRoom(request.roomType(), request.photoUrl(), request.maxOccupancy(),
+        room.updateRoom(request.roomType(), request.maxOccupancy(),
                 request.price(), request.description(), request.quantity());
 
         return RoomDetailResponse.from(room);

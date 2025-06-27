@@ -40,6 +40,7 @@ public class HotelEntity {
     private Integer reviewCount = 0; //리뷰 수
 
     @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhotoEntity> hotelPhotos = new ArrayList<>();
 
     public void updateHotel(UpdateHotelRequest request) {

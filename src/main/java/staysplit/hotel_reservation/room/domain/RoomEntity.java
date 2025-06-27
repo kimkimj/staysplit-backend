@@ -3,6 +3,10 @@ package staysplit.hotel_reservation.room.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.photo.domain.entity.PhotoEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,10 +37,13 @@ public class RoomEntity {
 
     private String description;
 
-    public void updateRoom(String roomType, String photoUrl, Integer maxOccupancy,
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PhotoEntity> roomPhotos = new ArrayList<>();
+
+    public void updateRoom(String roomType, Integer maxOccupancy,
                            Integer price, String description, Integer quantity) {
         this.roomType = roomType;
-        this.photoUrl = photoUrl;
         this.quantity = quantity;
         this.maxOccupancy = maxOccupancy;
         this.price = price;
