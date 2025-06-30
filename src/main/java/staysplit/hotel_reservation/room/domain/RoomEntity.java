@@ -9,7 +9,6 @@ import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "room")
 public class RoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,19 +38,4 @@ public class RoomEntity {
         this.description = description;
     }
 
-    public void changeRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public void changePrice(Integer price) {
-        this.price = price;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
-    }
-
-    public void changeMaxOccupancy(Integer maxOccupancy) {
-        this.maxOccupancy = maxOccupancy;
-    }
 }

@@ -10,7 +10,6 @@ import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "provider")
 public class ProviderEntity {
 
     @Id

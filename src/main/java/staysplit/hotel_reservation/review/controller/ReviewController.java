@@ -1,7 +1,6 @@
 package staysplit.hotel_reservation.review.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,7 +13,6 @@ import staysplit.hotel_reservation.review.domain.dto.response.CreateReviewRespon
 import staysplit.hotel_reservation.review.domain.dto.response.GetReviewResponse;
 import staysplit.hotel_reservation.review.service.ReviewService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -29,25 +27,25 @@ public class ReviewController {
     }
 
     @GetMapping("/customers/{customerId}")
-    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Long customerId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Integer customerId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<GetReviewResponse> review = reviewService.getReviewByCustomerId(customerId, pageable);
         return Response.success(review);
     }
 
     @GetMapping("/hotels/{hotelId}")
-    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Long hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Integer hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<GetReviewResponse> review = reviewService.getReviewByHotelId(hotelId, pageable);
         return Response.success(review);
     }
 
     @DeleteMapping("/{reviewId}")
-    public Response<String> deleteReview(@RequestParam Long customerId, @PathVariable Long reviewId) {
+    public Response<String> deleteReview(@RequestParam Integer customerId, @PathVariable Integer reviewId) {
         reviewService.deleteReview(customerId, reviewId);
         return Response.success("리뷰가 삭제되었습니다.");
     }
 
     @PutMapping("/{reviewId}")
-    public Response<String> modifyReview( @PathVariable Long reviewId, @RequestBody ModifyReviewRequest request) {
+    public Response<String> modifyReview( @PathVariable Integer reviewId, @RequestBody ModifyReviewRequest request) {
         reviewService.modifyReview(reviewId, request);
         return Response.success("리뷰가 수정되었습니다.");
     }
