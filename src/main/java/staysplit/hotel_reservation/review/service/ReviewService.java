@@ -50,18 +50,18 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<GetReviewResponse> getReviewByCustomerId(Long customerId, Pageable pageable){
+    public Page<GetReviewResponse> getReviewByCustomerId(Integer customerId, Pageable pageable){
         Page<ReviewEntity> review = reviewRepository.getReviewByCustomerId(customerId, pageable);
         return review.map(GetReviewResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public Page<GetReviewResponse> getReviewByHotelId(Long  hotelId, Pageable pageable){
+    public Page<GetReviewResponse> getReviewByHotelId(Integer  hotelId, Pageable pageable){
         Page<ReviewEntity> review = reviewRepository.getReviewByHotelId(hotelId, pageable);
         return review.map(GetReviewResponse::from);
     }
 
-    public GetReviewResponse modifyReview(Long reviewId, ModifyReviewRequest request){
+    public GetReviewResponse modifyReview(Integer reviewId, ModifyReviewRequest request){
         ReviewEntity review = validateReview(reviewId);
         hasAuthority(review, request.customerId(), reviewId);
 
@@ -71,19 +71,19 @@ public class ReviewService {
         return GetReviewResponse.from(review);
     }
 
-    public void deleteReview(Long customerId, Long reviewId) {
+    public void deleteReview(Integer customerId, Integer reviewId) {
         ReviewEntity review = validateReview(reviewId);
         hasAuthority(review, customerId, reviewId);
         review.markDeleted();
     }
 
-    private ReviewEntity validateReview(Long reviewId) {
+    private ReviewEntity validateReview(Integer reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND,
                         ErrorCode.REVIEW_NOT_FOUND.getMessage()));
     }
 
-    private void hasAuthority(ReviewEntity review, Long customerId, Long reviewId) {
+    private void hasAuthority(ReviewEntity review, Integer customerId, Integer reviewId) {
         if (!(review.getId().equals(reviewId) && review.getCustomer().getId().equals(customerId))) {
             throw new AppException(ErrorCode.UNAUTHORIZED_REVIEWER,
                     ErrorCode.UNAUTHORIZED_REVIEWER.getMessage());
