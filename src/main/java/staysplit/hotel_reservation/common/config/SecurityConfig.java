@@ -27,22 +27,24 @@ public class SecurityConfig {
             "/api/providers/sign-up",
             "/api/users/login",
             "/api/rooms/hotels/*",
-
+            "/api/reviews/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
+
+            "/api/hotels",
+            "/api/hotels/**",
             "/api/rooms/*",
+            "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
             "/login/oauth2/code/**",
             "/api/customers/google/login",
-            "/api/customers/signup/oauth",
-            "/oauth/**"
+            "/oauth/**",
     };
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -53,6 +55,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         .requestMatchers(OAUTH_ENDPOINTS).permitAll()
