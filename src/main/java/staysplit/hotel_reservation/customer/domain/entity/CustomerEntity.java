@@ -11,14 +11,12 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @AllArgsConstructor
-@Table(name = "customer")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomerEntity {
 
     @Id
     @Column(name = "customer_id")
     private Integer id;
-
 
     @MapsId
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "hotel")
 public class HotelEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -29,14 +28,12 @@ public class HotelEntity {
     private BigDecimal latitude;
     private String description;
 
-    @Column(name = "star_level")
     private Integer starLevel;
 
     @Builder.Default
     private Double rating = 0.0;
 
     @Builder.Default
-    @Column(name = "review_count")
     private Integer reviewCount = 0;
 
     public void updateHotel(UpdateHotelRequest request) {
