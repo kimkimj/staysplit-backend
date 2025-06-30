@@ -11,7 +11,6 @@ import staysplit.hotel_reservation.hotel.dto.request.*;
 import staysplit.hotel_reservation.hotel.dto.response.*;
 import staysplit.hotel_reservation.hotel.service.HotelService;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/hotels")
@@ -29,7 +28,7 @@ public class HotelController {
     //호텔 수정
     @PutMapping("/{hotelId}")
     public Response<GetHotelDetailResponse> updateHotel(
-            @PathVariable Long hotelId,
+            @PathVariable Integer hotelId,
             @RequestBody UpdateHotelRequest request,
             Authentication authentication){
 
@@ -39,11 +38,10 @@ public class HotelController {
 
     //호텔 상세 조회
     @GetMapping("/{hotelId}")
-    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable Long hotelId){
+    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable Integer hotelId){
         GetHotelDetailResponse response = hotelService.getHotelDetails(hotelId);
         return Response.success(response);
     }
-
 
     //호텔 목록 조회
     @GetMapping("/list")
@@ -52,13 +50,11 @@ public class HotelController {
         return Response.success(response);
     }
 
-
     //호텔 삭제
     @DeleteMapping("/{hotelId}")
-    public Response<DeleteHotelResponse> deleteHotel(@PathVariable Long hotelId, Authentication authentication){
+    public Response<DeleteHotelResponse> deleteHotel(@PathVariable Integer hotelId, Authentication authentication){
 
         DeleteHotelResponse response = hotelService.deleteHotel(hotelId, authentication.getName());
         return Response.success(response);
     }
-
 }

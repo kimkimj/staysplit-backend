@@ -8,10 +8,7 @@ import jakarta.validation.constraints.Positive;
 public record UpdateRoomRequest(
 
         @NotNull(message = "Room ID를 입력해 주세요.")
-        Long roomId,
-
-        @NotBlank(message = "사진 파일명을 입력해 주세요.")
-        String photoUrl,
+        Integer roomId,
 
         @NotBlank(message = "객실에 대한 설명을 입력해 주세요.")
         String description,
