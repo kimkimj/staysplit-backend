@@ -5,14 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
-import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
+import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
@@ -66,7 +68,7 @@ public class CustomerServiceTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
         when(customerRepository.findByUser(user)).thenReturn(Optional.of(customer));
 
-        CustomerInfoResponse result = customerService.getMyProfile("test@example.com");
+        CustomerDetailsResponse result = customerService.getMyProfile("test@example.com");
 
         assertThat(result.nickname()).isEqualTo("tester");
     }
@@ -75,7 +77,7 @@ public class CustomerServiceTest {
     void findCustomerById_success() {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-        CustomerInfoResponse result = customerService.findCustomerById(1L);
+        CustomerDetailsResponse result = customerService.findCustomerById(1L);
 
         assertThat(result.name()).isEqualTo("Test User");
     }
@@ -88,7 +90,7 @@ public class CustomerServiceTest {
         when(customerRepository.findByUser(user)).thenReturn(Optional.of(customer));
         when(customerRepository.existsByNickname("newNick")).thenReturn(false);
 
-        CustomerInfoResponse result = customerService.changeNickname(request, "test@example.com");
+        CustomerDetailsResponse result = customerService.changeNickname(request, "test@example.com");
 
         assertThat(result.nickname()).isEqualTo("newNick");
     }

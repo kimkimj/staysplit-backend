@@ -9,9 +9,9 @@ import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupRequest;
 import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeRequest;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
-import staysplit.hotel_reservation.customer.domain.dto.response.CustomerInfoResponse;
+import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.enums.LoginSource;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
@@ -25,7 +25,7 @@ public class CustomerService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public CustomerInfoResponse signup(CustomerSignupRequest request) {
+    public CustomerDetailsResponse signup(CustomerSignupRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
         }
@@ -51,27 +51,27 @@ public class CustomerService {
                 .build();
 
         customerRepository.save(customer);
-        return CustomerInfoResponse.from(customer);
+        return CustomerDetailsResponse.from(customer);
     }
 
     // 내 프로필
-    public CustomerInfoResponse getMyProfile(String email) {
+    public CustomerDetailsResponse getMyProfile(String email) {
         CustomerEntity customer = validateCustomer(email);
-        return CustomerInfoResponse.from(customer);
+        return CustomerDetailsResponse.from(customer);
     }
 
-    public CustomerInfoResponse findCustomerById(Long id) {
+    public CustomerDetailsResponse findCustomerById(Long id) {
         CustomerEntity customer = validateCustomer(id);
-        return CustomerInfoResponse.from(customer);
+        return CustomerDetailsResponse.from(customer);
     }
 
-    public CustomerInfoResponse changeNickname(NicknameChangeRequest request, String email) {
+    public CustomerDetailsResponse changeNickname(NicknameChangeRequest request, String email) {
         CustomerEntity customer = validateCustomer(email);
         if (customerRepository.existsByNickname(request.getNickname())) {
             throw new AppException(ErrorCode.DUPLICATE_NICKNAME, ErrorCode.DUPLICATE_NICKNAME.getMessage());
         }
         customer.setNickname(request.getNickname());
-        return CustomerInfoResponse.from(customer);
+        return CustomerDetailsResponse.from(customer);
     }
 
 //    // 두번째 이메일은 Authentication 객체에 있는 값

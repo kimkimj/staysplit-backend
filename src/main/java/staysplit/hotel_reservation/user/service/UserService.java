@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.common.jwt.JwtTokenProvider;
-import staysplit.hotel_reservation.user.domain.dto.entity.UserEntity;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
+import staysplit.hotel_reservation.user.domain.dto.request.PasswordUpdateRequest;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
@@ -31,5 +32,17 @@ public class UserService {
         }
 
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
+    }
+
+    public String changePassword(PasswordUpdateRequest request, String email) {
+        UserEntity user = validateUser(email);
+        user.changePassword(passwordEncoder.encode(request.password()));
+        return "비밀번호가 변경되었습니다.";
+    }
+
+    private UserEntity validateUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,
+                        ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 }

@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.common.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import staysplit.hotel_reservation.common.jwt.JwtTokenFilter;
+import staysplit.hotel_reservation.common.security.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
 
@@ -21,15 +22,25 @@ public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
 
-    private final String[] ALLOWED_URLS = {
+    private final String[] PUBLIC_POST_ENDPOINTS = {
             "/api/customers/sign-up",
             "/api/providers/sign-up",
             "/api/users/login",
+            "/api/rooms/hotels/*",
+            "/api/reviews/**",
+    };
 
+    private final String[] PUBLIC_GET_ENDPOINTS = {
+            "/api/hotels/*",
+            "/api/rooms/*",
+            "/api/reviews/**",
+    };
+
+    private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
-            "/login/oauth2/code/google",
+            "/login/oauth2/code/**",
             "/api/customers/google/login",
-            "/oauth/**"
+            "/oauth/**",
     };
 
 
@@ -41,8 +52,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(req -> req.requestMatchers(ALLOWED_URLS)
-                        .permitAll()
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(OAUTH_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
+                        .requestMatchers(HttpMethod.PUT, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

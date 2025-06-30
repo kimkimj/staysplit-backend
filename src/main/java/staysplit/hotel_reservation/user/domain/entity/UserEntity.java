@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.user.domain.dto.entity;
+package staysplit.hotel_reservation.user.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,6 +18,8 @@ public class UserEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+
     private String password;
 
     @Setter

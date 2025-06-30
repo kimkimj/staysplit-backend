@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.common.jwt;
+package staysplit.hotel_reservation.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
