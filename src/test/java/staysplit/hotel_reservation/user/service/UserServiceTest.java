@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
+import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
 import staysplit.hotel_reservation.user.domain.enums.Role;
@@ -62,9 +63,9 @@ class UserServiceTest {
         given(jwtTokenProvider.createToken(testEmail, "CUSTOMER")).willReturn(token);
 
         // then
-        String result = userService.login(loginRequest);
+        UserLoginResponse response = userService.login(loginRequest);
 
-        assertThat(result).isEqualTo(token);
+        assertThat(response.jwt()).isEqualTo(token);
     }
 
     @Test
