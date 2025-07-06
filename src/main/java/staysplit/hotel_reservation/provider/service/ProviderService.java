@@ -8,6 +8,7 @@ import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupRequest;
+import staysplit.hotel_reservation.provider.domain.dto.response.ProviderDetailResponse;
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
@@ -21,7 +22,6 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 @RequiredArgsConstructor
 public class ProviderService {
     private final ProviderRepository providerRepository;
-    private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -47,6 +47,13 @@ public class ProviderService {
         providerRepository.save(provider);
 
         return new ProviderSignupResponse(provider.getUser().getEmail());
+    }
+
+    public ProviderDetailResponse getMyPage(String email) {
+        ProviderEntity provider = providerRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+
+        return ProviderDetailResponse.from(provider);
     }
 
 }
