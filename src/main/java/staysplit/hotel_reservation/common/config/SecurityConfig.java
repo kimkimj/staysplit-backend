@@ -35,7 +35,7 @@ public class SecurityConfig {
 
             "/api/hotels",
             "/api/hotels/**",
-            "/api/rooms/*",
+            "/api/rooms/**",
             "/api/reviews/**",
     };
 
