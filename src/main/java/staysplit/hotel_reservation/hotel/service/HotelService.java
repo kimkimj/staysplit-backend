@@ -11,12 +11,12 @@ import staysplit.hotel_reservation.hotel.dto.request.*;
 import staysplit.hotel_reservation.hotel.dto.response.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
+import staysplit.hotel_reservation.photo.service.PhotoUrlBuilder;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import staysplit.hotel_reservation.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -25,7 +25,7 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
     private final ProviderRepository providerRepository;
-    private final UserRepository userRepository;
+    private final PhotoUrlBuilder photoUrlBuilder;
 
     public CreateHotelResponse createHotel(CreateHotelRequest request, String providerEmail) {
         ProviderEntity provider = validateProvider(providerEmail);
@@ -47,13 +47,13 @@ public class HotelService {
     @Transactional(readOnly = true)
     public GetHotelDetailResponse getHotelDetails(Integer hotelId) {
         HotelEntity hotel = getHotelOrThrow(hotelId);
-        return GetHotelDetailResponse.toDto(hotel);
+        return GetHotelDetailResponse.from(hotel, photoUrlBuilder);
     }
 
     @Transactional(readOnly = true)
     public Page<GetHotelListResponse> getHotelList(Pageable pageable) {
         Page<HotelEntity> hotelPage = hotelRepository.findAll(pageable);
-        return hotelPage.map(GetHotelListResponse::toDto);
+        return hotelPage.map(hotel -> GetHotelListResponse.from(hotel, photoUrlBuilder));
     }
 
     public GetHotelDetailResponse updateHotel(Integer hotelId, UpdateHotelRequest request, String providerEmail) {
@@ -63,7 +63,7 @@ public class HotelService {
         verifyOwnership(hotel, provider);
 
         hotel.updateHotel(request);
-        return GetHotelDetailResponse.toDto(hotel);
+        return GetHotelDetailResponse.from(hotel, photoUrlBuilder);
     }
 
     public DeleteHotelResponse deleteHotel(Integer hotelId, String email) {
