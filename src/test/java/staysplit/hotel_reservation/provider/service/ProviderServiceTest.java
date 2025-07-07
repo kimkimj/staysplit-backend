@@ -55,14 +55,14 @@ class ProviderServiceTest {
         given(passwordEncoder.encode(rawPassword)).willReturn(encodedPassword);
 
         UserEntity mockSavedUser = UserEntity.builder()
-                .id(1L)
+                .id(1)
                 .email(email)
                 .password(encodedPassword)
                 .role(Role.PROVIDER)
                 .build();
 
         ProviderEntity mockSavedProvider = ProviderEntity.builder()
-                .id(1L)
+                .id(1)
                 .user(mockSavedUser)
                 .build();
 

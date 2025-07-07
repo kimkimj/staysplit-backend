@@ -75,9 +75,9 @@ public class CustomerServiceTest {
 
     @Test
     void findCustomerById_success() {
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
 
-        CustomerDetailsResponse result = customerService.findCustomerById(1L);
+        CustomerDetailsResponse result = customerService.findCustomerById(1);
 
         assertThat(result.name()).isEqualTo("Test User");
     }
