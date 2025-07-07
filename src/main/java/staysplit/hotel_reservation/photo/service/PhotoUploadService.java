@@ -10,7 +10,6 @@ import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.service.HotelValidator;
-import staysplit.hotel_reservation.photo.domain.DisplayType;
 import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 import staysplit.hotel_reservation.photo.dto.response.PhotoDetailResponse;
 import staysplit.hotel_reservation.photo.repository.PhotoRepository;
@@ -53,16 +52,6 @@ public class PhotoUploadService {
                                            MultipartFile multipartFile) throws IOException {
         ProviderEntity provider = providerValidator.validateProvider(email);
 
-        HotelEntity hotel = null;
-        RoomEntity room = null;
-        if (entityType.equals("HOTEL")) {
-            hotel = hotelValidator.validateHotel(entityId);
-        } else if (entityType.equals("ROOM")) {
-            room = roomValidator.validateRoom(entityId);
-        } else {
-            throw new AppException(ErrorCode.INVALID_ENTITY_TYPE, ErrorCode.INVALID_ENTITY_TYPE.getMessage());
-        }
-
         String originalFileName = multipartFile.getOriginalFilename();
         String storedFileName = createStoredFileName(originalFileName);
 
@@ -71,20 +60,48 @@ public class PhotoUploadService {
         PhotoEntity photo = PhotoEntity.builder()
                 .uploadFileName(originalFileName)
                 .storedFileName(storedFileName)
-                .displayType(getDisplayType(displayType))
-                .hotel(hotel)
-                .room(room)
                 .build();
 
-        photoRepository.save(photo);
+        HotelEntity hotel;
+        RoomEntity room;
 
-        return PhotoDetailResponse.from(photo);
+        if (entityType.equals("HOTEL")) {
+            hotel = hotelValidator.validateHotel(entityId);
+
+            if (displayType.equals("MAIN")) {
+                hotel.updateMainPhoto(photo);
+            } else {
+                hotel.addAdditionalPhotos(photo);
+            }
+
+        } else if (entityType.equals("ROOM")) {
+            room = roomValidator.validateRoom(entityId);
+            if (displayType.equals("MAIN")) {
+                room.updateMainPhoto(photo);
+            } else {
+                room.addAdditionalPhoto(photo);
+            }
+
+        } else {
+            throw new AppException(ErrorCode.INVALID_ENTITY_TYPE, ErrorCode.INVALID_ENTITY_TYPE.getMessage());
+        }
+
+        photoRepository.save(photo);
+        return PhotoDetailResponse.from(photo, displayType);
     }
 
+    // 사진 조회
     public String getFullPath(String filename) {
 
         //return fileDir + filename;
         return Paths.get(fileDir, filename).toString();
+    }
+
+    // 사진 삭제
+    public void deletePhoto(String filename) {
+        PhotoEntity photo = photoRepository.findByStoredFileName(filename)
+                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND, ErrorCode.PHOTO_NOT_FOUND.getMessage()));
+        photoRepository.delete(photo);
     }
 
     private String createStoredFileName(String originalFileName) {
@@ -96,13 +113,6 @@ public class PhotoUploadService {
     private String extractExtension(String originalFileName) {
         int index = originalFileName.lastIndexOf(".");
         return originalFileName.substring(index + 1);
-    }
-
-    private DisplayType getDisplayType(String displayType) {
-        if (displayType.equals("MAIN")) {
-            return DisplayType.MAIN;
-        }
-        return DisplayType.ADDITIONAL_PHOTO;
     }
 
 }

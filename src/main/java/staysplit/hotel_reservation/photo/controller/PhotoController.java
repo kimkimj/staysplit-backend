@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,8 +48,20 @@ public class PhotoController {
     // 이미지 조회
     @ResponseBody
     @GetMapping("/{filename}")
-    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
-        return new UrlResource("file:" + photoUploadService.getFullPath(filename));
+    public ResponseEntity<Resource> downloadImage(@PathVariable String filename) throws MalformedURLException {
+        UrlResource resource = new UrlResource("file:" + photoUploadService.getFullPath(filename));
+        String contentType = "image/jpeg";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(resource);
+    }
+
+    // 이미지 삭제
+    @DeleteMapping("/{filename}")
+    public Response<String> deleteImage(@PathVariable String filename) {
+        photoUploadService.deletePhoto(filename);
+        return Response.success("파일이 삭제되었습니다.");
     }
 
 }
