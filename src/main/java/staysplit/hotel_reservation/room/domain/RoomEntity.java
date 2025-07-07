@@ -12,51 +12,34 @@ import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 public class RoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "room_id")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
-    HotelEntity hotel;
+    private HotelEntity hotel;
 
     @Column(nullable = false)
-    String roomType;
+    private String roomType;
 
-    String photoUrl;
-
-    @Column(nullable = false)
-    Integer maxOccupancy;
+    @Column( nullable = false)
+    private Integer maxOccupancy;
 
     @Column(nullable = false)
-    Integer price;
+    private Integer price;
 
-    String description;
+    private String description;
 
-    public void updateRoom(String roomType, String photoUrl, Integer maxOccupancy,
-                           Integer price, String description) {
+    @Column(nullable = false)
+    private Integer totalQuantity;
+
+    public void updateRoom(String roomType, Integer maxOccupancy,
+                           Integer price, String description, Integer totalQuantity) {
         this.roomType = roomType;
-        this.photoUrl = photoUrl;
         this.maxOccupancy = maxOccupancy;
         this.price = price;
         this.description = description;
+        this.totalQuantity = totalQuantity;
     }
 
-    public void changeRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public void changePhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public void changePrice(Integer price) {
-        this.price = price;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
-    }
-
-    public void changeMaxOccupancy(Integer maxOccupancy) {
-        this.maxOccupancy = maxOccupancy;
-    }
 }

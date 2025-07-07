@@ -21,7 +21,8 @@ public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "review_id")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -56,11 +57,11 @@ public class ReviewEntity {
         this.rating = rating;
     }
 
-    public Long geCustomerId() {
+    public Integer geCustomerId() {
         return customer != null ? customer.getId() : null;
     }
 
-    public Long getHotelId() {
+    public Integer getHotelId() {
         return hotel != null ? hotel.getHotelId() : null;
     }
 

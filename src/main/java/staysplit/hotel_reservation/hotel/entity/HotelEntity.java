@@ -15,25 +15,26 @@ import java.math.BigDecimal;
 public class HotelEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long hotelId;
+    @Column(name = "hotel_id")
+    private Integer hotelId;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provider_id", nullable = false)
     private ProviderEntity provider;
 
-    private String name;  //호텔 이름
-    private String address; //호텔 주소
-    private BigDecimal longitude; //경도
-    private BigDecimal latitude; //위도
-    private String description; //호텔 설명
-    private Integer starLevel; //호텔 성급(ex.5성급)
+    private String name;
+    private String address;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
+    private String description;
+
+    private Integer starLevel;
 
     @Builder.Default
-    private Double rating = 0.0; //별점
+    private Double rating = 0.0;
 
     @Builder.Default
-    private Integer reviewCount = 0; //리뷰 수
-    private String imageUrl; //메인 이미지
+    private Integer reviewCount = 0;
 
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
@@ -43,7 +44,5 @@ public class HotelEntity {
         this.description = request.description();
         this.starLevel = request.starLevel();
         this.rating = request.rating();
-        this.imageUrl = request.imageUrl();
     }
-
 }

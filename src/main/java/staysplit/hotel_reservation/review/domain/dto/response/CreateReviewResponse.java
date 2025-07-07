@@ -3,9 +3,9 @@ package staysplit.hotel_reservation.review.domain.dto.response;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 
 public record CreateReviewResponse(
-        Long reviewId,
-        Long customerId,
-        Long hotelId,
+        Integer reviewId,
+        Integer customerId,
+        Integer hotelId,
         String nickname,
         String content,
         Integer rating

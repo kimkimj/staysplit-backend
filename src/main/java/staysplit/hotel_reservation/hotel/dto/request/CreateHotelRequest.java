@@ -4,7 +4,5 @@ public record CreateHotelRequest(
         String name,
         String address,
         String description,
-        Integer starLevel,
-        Double rating,
-        String imageUrl
+        Integer starLevel
 ) {}

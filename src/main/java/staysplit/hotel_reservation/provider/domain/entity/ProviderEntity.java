@@ -13,9 +13,10 @@ import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 public class ProviderEntity {
 
     @Id
-    private Long id;
+    @Column(name = "provider_id")
+    private Integer id;
 
-    @MapsId // 이렇게 하면 user_id가 이 클래스의 PK
+    @MapsId
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;

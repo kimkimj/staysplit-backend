@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import staysplit.hotel_reservation.common.security.jwt.CustomAuthenticationEntryPoint;
 import staysplit.hotel_reservation.common.security.jwt.JwtTokenFilter;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final String[] PUBLIC_POST_ENDPOINTS = {
             "/api/customers/sign-up",
@@ -32,17 +34,18 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
-            "/api/rooms/*",
+            "/api/hotels",
+            "/api/hotels/**",
+            "/api/rooms/**",
             "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
-            "/login/oauth2/code/google",
+            "/login/oauth2/code/**",
             "/api/customers/google/login",
             "/oauth/**",
     };
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -53,6 +56,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         .requestMatchers(OAUTH_ENDPOINTS).permitAll()
@@ -61,8 +65,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .requestMatchers(HttpMethod.PUT, "/api/reviews/*").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/reviews/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/reservations/**").hasRole("CUSTOMER")
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .build();
     }
 

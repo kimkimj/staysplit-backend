@@ -15,7 +15,8 @@ import java.time.LocalDate;
 public class CustomerEntity {
 
     @Id
-    private Long id;
+    @Column(name = "customer_id")
+    private Integer id;
 
     @MapsId
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
