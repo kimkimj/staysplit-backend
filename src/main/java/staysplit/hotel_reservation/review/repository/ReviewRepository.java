@@ -12,10 +12,10 @@ import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
-    @Query("SELECT r FROM ReviewEntity r WHERE r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL")
+    @Query("SELECT r FROM ReviewEntity r WHERE r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL ORDER BY r.createdAt, r.id DESC")
     Page<ReviewEntity> getReviewByHotelId(@Param("hotelId") Integer hotelId, Pageable pageable);
 
-    @Query("SELECT r FROM ReviewEntity r WHERE r.customer.id = :customerId AND r.deletedAt IS NULL")
+    @Query("SELECT r FROM ReviewEntity r WHERE r.customer.id = :customerId AND r.deletedAt IS NULL ORDER BY r.createdAt, r.id DESC")
     Page<ReviewEntity> getReviewByCustomerId(@Param("customerId") Integer customerId, Pageable pageable);
 
     @Query("SELECT COUNT(r) > 0 FROM ReviewEntity r WHERE r.customer.id = :customerId AND r.hotel.hotelId = :hotelId AND r.deletedAt IS NULL")

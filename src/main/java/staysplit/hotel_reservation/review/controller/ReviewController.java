@@ -1,5 +1,6 @@
 package staysplit.hotel_reservation.review.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,13 +28,14 @@ public class ReviewController {
     }
 
     @GetMapping("/customers/{customerId}")
-    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Integer customerId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Integer customerId, @PageableDefault(page = 0, size = 10, sort = {"createdAt,desc", "id,desc"})  Pageable pageable) {
         Page<GetReviewResponse> review = reviewService.getReviewByCustomerId(customerId, pageable);
         return Response.success(review);
     }
 
     @GetMapping("/hotels/{hotelId}")
-    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Integer hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Response<Page<GetReviewResponse>> getReviewByHotelId(
+            @PathVariable Integer hotelId, @PageableDefault(page = 0, size = 10, sort = {"createdAt,desc", "id,desc"})  Pageable pageable) {
         Page<GetReviewResponse> review = reviewService.getReviewByHotelId(hotelId, pageable);
         return Response.success(review);
     }
