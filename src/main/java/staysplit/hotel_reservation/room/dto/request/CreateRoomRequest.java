@@ -1,4 +1,4 @@
-package staysplit.hotel_reservation.room.domain.dto.request;
+package staysplit.hotel_reservation.room.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +22,11 @@ public record CreateRoomRequest(
 
         @NotNull(message = "수용 인원을 입력해 주세요.")
         @Min(value = 1, message = "수용 인원은 최소 1명 이상이어야 합니다.")
-        Integer occupancy
+        Integer occupancy,
+
+        @NotNull(message = "이 객실과 같은 타입의 객실 개수를 입력해주세요.")
+        @Min(value = 1, message = "객실 수는 1개 이상 이어야 합니다.")
+        Integer totalQuantity
 
 ) { }
 
