@@ -2,17 +2,13 @@ package staysplit.hotel_reservation.room.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
-import staysplit.hotel_reservation.room.domain.dto.request.CreateRoomRequest;
-import staysplit.hotel_reservation.room.domain.dto.request.UpdateRoomRequest;
-import staysplit.hotel_reservation.room.domain.dto.response.RoomDeleteResponse;
-import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
+import staysplit.hotel_reservation.room.dto.request.CreateRoomRequest;
+import staysplit.hotel_reservation.room.dto.request.UpdateRoomRequest;
+import staysplit.hotel_reservation.room.dto.response.RoomDeleteResponse;
+import staysplit.hotel_reservation.room.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.service.RoomService;
 
 @RestController
@@ -48,12 +44,4 @@ public class RoomController {
         return Response.success(response);
     }
 
-    // GET ALL ROOMS
-    @GetMapping("/hotels/{hotelId}")
-    public Response<Page<RoomInfoResponse>> findAllRoomsByHotelId(@PathVariable Integer hotelId,
-                                                                  @PageableDefault(size = 10, sort = "price", direction = Sort.Direction.ASC)
-                                                                  Pageable pageable) {
-        Page<RoomInfoResponse> rooms = roomService.findAllRoomsByHotel(hotelId, pageable);
-        return Response.success(rooms);
-    }
 }

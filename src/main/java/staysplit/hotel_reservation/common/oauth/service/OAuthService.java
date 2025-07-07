@@ -30,30 +30,6 @@ public class OAuthService {
     private final CustomerRepository customerRepository;
 
 
-    // oauth 로그인
-
-
-
-    // 일반 회원가입
-//    public UserInfoResponse signup(UserSignupRequest userCreateRequest) {
-//
-//        if (userRepository.existsByEmail(userCreateRequest.email())) {
-//            throw new AppException(ErrorCode.DUPLICATE_EMAIL, ErrorCode.DUPLICATE_EMAIL.getMessage());
-//        }
-//
-//        UserEntity user = UserEntity.builder()
-//                .email(userCreateRequest.email())
-//                .password(encoder.encode(userCreateRequest.password()))
-//                .build();
-//
-//        if (userCreateRequest.role().equals("provider")) {
-//            user.setRole(Role.PROVIDER);
-//        } else if (userCreateRequest.role().equals("customer")) {
-//            user.setRole(Role.CUSTOMER);
-//        }
-//        userRepository.save(user);
-//    }
-//
     // oauth로 회원가입
     public CustomerDetailsResponse oauthSignup(OauthSignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -81,17 +57,7 @@ public class OAuthService {
 
         return CustomerDetailsResponse.from(customer);
     }
-//
-//    // 일반 로그인
-//    public String login(CustomerLoginRequest loginRequest) {
-//        CustomerEntity customer = validateCustomer(loginRequest.email());
-//        if (!encoder.matches(loginRequest.password(), customer.getPassword())) {
-//            throw new AppException(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage());
-//        }
-//        return jwtTokenProvider.createToken(customer.getEmail(), customer.getRole().toString());
-//    }
-//
-//    // 구글 로그인
+
     public String googleLogin(RedirectDto redirectDto) {
     AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
     GoogleProfileDto googleProfileDto = googleService.getGoolgleProfile(accessTokenDto.getAccessToken());

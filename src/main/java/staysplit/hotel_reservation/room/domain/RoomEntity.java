@@ -13,29 +13,33 @@ public class RoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
-    Integer id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
-    HotelEntity hotel;
-
-    @Column(name = "room_type", nullable = false)
-    String roomType;
-
-    @Column(name = "max_occupancy", nullable = false)
-    Integer maxOccupancy;
+    private HotelEntity hotel;
 
     @Column(nullable = false)
-    Integer price;
+    private String roomType;
 
-    String description;
+    @Column( nullable = false)
+    private Integer maxOccupancy;
+
+    @Column(nullable = false)
+    private Integer price;
+
+    private String description;
+
+    @Column(nullable = false)
+    private Integer totalQuantity;
 
     public void updateRoom(String roomType, Integer maxOccupancy,
-                           Integer price, String description) {
+                           Integer price, String description, Integer totalQuantity) {
         this.roomType = roomType;
         this.maxOccupancy = maxOccupancy;
         this.price = price;
         this.description = description;
+        this.totalQuantity = totalQuantity;
     }
 
 }

@@ -12,10 +12,10 @@ import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
-import staysplit.hotel_reservation.room.domain.dto.request.CreateRoomRequest;
-import staysplit.hotel_reservation.room.domain.dto.request.UpdateRoomRequest;
-import staysplit.hotel_reservation.room.domain.dto.response.RoomDeleteResponse;
-import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
+import staysplit.hotel_reservation.room.dto.request.CreateRoomRequest;
+import staysplit.hotel_reservation.room.dto.request.UpdateRoomRequest;
+import staysplit.hotel_reservation.room.dto.response.RoomDeleteResponse;
+import staysplit.hotel_reservation.room.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
@@ -38,6 +38,7 @@ public class RoomService {
                 .price(request.price())
                 .description(request.description())
                 .maxOccupancy(request.occupancy())
+                .totalQuantity(request.totalQuantity())
                 .build();
 
         roomRepository.save(room);
@@ -53,7 +54,7 @@ public class RoomService {
         }
 
         room.updateRoom(request.roomType(), request.maxOccupancy(),
-                request.price(), request.description());
+                request.price(), request.description(), request.totalQuantity());
 
         return RoomInfoResponse.from(room);
     }
