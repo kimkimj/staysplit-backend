@@ -6,11 +6,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
+import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.user.domain.dto.request.LoginRequest;
 import staysplit.hotel_reservation.user.domain.dto.request.PasswordUpdateRequest;
 import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
+import staysplit.hotel_reservation.user.domain.dto.response.UserLoginStatusResponse;
 import staysplit.hotel_reservation.user.service.UserService;
 
 
@@ -57,5 +62,20 @@ public class UserController {
 
         response.addCookie(cookie);
         return Response.success("로그아웃 성공");
+    }
+
+    @GetMapping("/auth/status")
+    public Response<UserLoginStatusResponse> getUserLoginStatus(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new AppException(ErrorCode.USER_NOT_LOGGED_IN, ErrorCode.USER_NOT_FOUND.getMessage());
+        }
+        String email = userDetails.getUsername();
+        String role = userDetails.getAuthorities().stream()
+                .map(auth -> auth.getAuthority())
+                .findFirst()
+                .orElse("UNKNOWN");
+
+        UserLoginStatusResponse response = new UserLoginStatusResponse(email, role, true);
+        return Response.success(response);
     }
 }

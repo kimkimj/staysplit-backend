@@ -18,7 +18,6 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
