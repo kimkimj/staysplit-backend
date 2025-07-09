@@ -28,13 +28,11 @@ public class SecurityConfig {
             "/api/customers/sign-up",
             "/api/providers/sign-up",
             "/api/users/login",
-            "/api/rooms/hotels/*",
             "/api/reviews/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/hotels/*",
-
             "/api/hotels",
             "/api/hotels/**",
             "/api/rooms/**",

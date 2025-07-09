@@ -3,9 +3,11 @@ package staysplit.hotel_reservation.hotel.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.hotel.dto.request.UpdateHotelRequest;
+import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +38,13 @@ public class HotelEntity {
     @Builder.Default
     private Integer reviewCount = 0;
 
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PhotoEntity> additionalPhotos;
+
+    @OneToOne
+    @JoinColumn(name = "main_photo_id")
+    private PhotoEntity mainPhoto;
+
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
         this.address = request.address();
@@ -45,4 +54,15 @@ public class HotelEntity {
         this.starLevel = request.starLevel();
         this.rating = request.rating();
     }
+
+    public void updateMainPhoto(PhotoEntity photo) {
+        this.mainPhoto = photo;
+        photo.setHotel(this);
+    }
+
+    public void addAdditionalPhotos(PhotoEntity photo) {
+        additionalPhotos.add(photo);
+        photo.setHotel(this);
+    }
+
 }

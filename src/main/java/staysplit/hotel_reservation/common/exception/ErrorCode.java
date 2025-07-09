@@ -33,7 +33,11 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND.NOT_FOUND, "존재하지 않는 예약입니다."),
     RESERVED_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "예약하지 않은 방입니다."),
     INSUFFICIENT_ROOM_STOCK(HttpStatus.CONFLICT, "방 재고가 부족합니다."),
-    PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS(HttpStatus.UNAUTHORIZED, "모든 참여자들이 결제를 완료하지 않았습니다.");
+    PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS(HttpStatus.UNAUTHORIZED, "모든 참여자들이 결제를 완료하지 않았습니다."),
+
+    // Photo
+    INVALID_ENTITY_TYPE(HttpStatus.NOT_FOUND, "올바른 Entity Type을 입력해주세요 (HOTEL, ROOM)"),
+    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다.");
 
     private HttpStatus httpStatus;
     private String message;
