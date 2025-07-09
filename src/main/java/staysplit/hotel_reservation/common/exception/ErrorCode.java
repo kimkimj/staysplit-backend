@@ -27,6 +27,12 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
     UNAUTHORIZED_REVIEWER(HttpStatus.UNAUTHORIZED, "리뷰 작성자가 아닙니다."),
 
+    // Payment
+    DUPLICATE_PAYMENT(HttpStatus.CONFLICT, "이미 처리된 결제입니다."),
+    INVALID_PAYMENT(HttpStatus.BAD_REQUEST, "결제 정보를 찾을 수 없습니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "결제 금액이 일치하지 않습니다."),
+    INVALID_PAYMENT_STATUS(HttpStatus.BAD_REQUEST, "결제가 완료되지 않았습니다."),
+
     // Reservation
     INVALID_CHECKOUT_DATE(HttpStatus.CONFLICT, "체크아웃 날짜는 체크인 날짜보다 이후여야 합니다."),
     RESERVATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "유효하지 않은 결제 정보입니다."),
