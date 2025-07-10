@@ -20,8 +20,8 @@ public record GetHotelDetailResponse(
         List<String> additionalPhotoUrls
 ) {
     public static GetHotelDetailResponse from(HotelEntity hotel, PhotoUrlBuilder urlBuilder) {
-        String mainUrl = hotel.getMainPhoto().buildFullUrl(urlBuilder);
-        List<String> additionalUrls = hotel.getAdditionalPhotos().stream()
+        String mainUrl = hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(urlBuilder) : null;
+        List<String> additionalUrls = hotel.getAdditionalPhotos() == null ? null : hotel.getAdditionalPhotos().stream()
                 .map(photo -> photo.buildFullUrl(urlBuilder))
                 .toList();
 
