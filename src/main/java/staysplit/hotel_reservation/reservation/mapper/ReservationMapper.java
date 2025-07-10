@@ -1,25 +1,30 @@
 package staysplit.hotel_reservation.reservation.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.reservation.dto.response.ParticipantDetailResponse;
-import staysplit.hotel_reservation.reservation.dto.response.ReservationDetailResponse;
-import staysplit.hotel_reservation.reservation.dto.response.ReservationListResponse;
-import staysplit.hotel_reservation.reservation.dto.response.ReservedRoomDetailResponse;
+import staysplit.hotel_reservation.photo.service.PhotoUrlBuilder;
+import staysplit.hotel_reservation.reservation.dto.response.*;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationParticipantEntity;
 import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class ReservationMapper {
+
+    private final PhotoUrlBuilder photoUrlBuilder;
     public ReservationDetailResponse toReservationDetailResponse(ReservationEntity reservation) {
-        HotelEntity hotel = reservation.getReservedRooms().get(0).getRoom().getHotel();
+        HotelEntity hotel = reservation.getHotel();
 
         return ReservationDetailResponse.builder()
                 .reservationId(reservation.getId())
                 .reservationNumber(reservation.getReservationNumber())
                 .reservationStatus(reservation.getStatus().toString())
+                .nights(reservation.getNights())
                 .checkIn(reservation.getCheckInDate())
                 .checkOut(reservation.getCheckOutDate())
                 .participants(reservation.getParticipants().stream().map(this::toParticipantDetailResponse).toList())
@@ -28,11 +33,11 @@ public class ReservationMapper {
                 .totalPrice(reservation.getTotalPrice())
                 .hotelName(hotel.getName())
                 .hotelAddress(hotel.getAddress())
-                .hotelMainImageUrl(null) // TODO: FIX
+                .hotelMainImageUrl(
+                        hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(photoUrlBuilder) : null)
                 .build();
     }
 
-    // TODO: WARN: N +1
     public ParticipantDetailResponse toParticipantDetailResponse(ReservationParticipantEntity participant) {
         return ParticipantDetailResponse.builder()
                 .email(participant.getCustomer().getUser().getEmail())
@@ -68,9 +73,28 @@ public class ReservationMapper {
                 .checkOutDate(reservation.getCheckOutDate())
                 .hotelName(hotel.getName())
                 .hotelAddress(hotel.getAddress())
-                .hotelMainImageUrl(null) // TODO: MAIN IMAGE
+                .hotelMainImageUrl(
+                        hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(photoUrlBuilder) : null
+                )
                 .build();
     }
 
+    public ReservationListResponseForProvider toListResponseForProvider(ReservationEntity reservation) {
+        List<String> participantNames = reservation.getParticipants()
+                .stream().map(p -> p.getCustomer().getName())
+                .toList();
+
+        return ReservationListResponseForProvider.builder()
+                .reservationId(reservation.getId())
+                .reservationNumber(reservation.getReservationNumber())
+                .nights(reservation.getNights())
+                .checkInDate(reservation.getCheckInDate())
+                .checkOutDate(reservation.getCheckOutDate())
+                .totalPrice(reservation.getTotalPrice())
+                .reservationStatus(reservation.getStatus().toString())
+                .participantNames(participantNames)
+                .numberOfParticipants(participantNames.size())
+                .build();
+    }
 
 }
