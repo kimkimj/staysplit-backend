@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.reservation.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.reservation.domain.enums.ReservationStatus;
 import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
 
@@ -59,6 +60,10 @@ public class ReservationEntity {
 
     @Column(nullable = false)
     private LocalDateTime expiresAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private HotelEntity hotel;
 
     public void addReservedRoom(ReservedRoomEntity reservedRoom) {
         reservedRooms.add(reservedRoom);

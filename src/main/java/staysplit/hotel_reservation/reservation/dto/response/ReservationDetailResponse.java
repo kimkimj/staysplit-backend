@@ -16,6 +16,7 @@ public record ReservationDetailResponse(
     List<ParticipantDetailResponse> participants,
     Integer totalPrice,
     Integer pricePaid,
+
     // 호텔 정보
     String hotelName,
     String hotelAddress,

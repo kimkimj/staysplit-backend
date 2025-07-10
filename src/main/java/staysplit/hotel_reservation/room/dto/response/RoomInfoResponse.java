@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.room.dto.response;
 import staysplit.hotel_reservation.photo.service.PhotoUrlBuilder;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record RoomInfoResponse(
@@ -18,11 +19,16 @@ public record RoomInfoResponse(
         List<String> additionalPhotoUrls
 ) {
     public static RoomInfoResponse from(RoomEntity room, PhotoUrlBuilder photoUrlBuilder) {
-        String roomMainUrl = room.getMainPhoto().buildFullUrl(photoUrlBuilder);
-        List<String> roomAdditionalUrls = room.getAdditionalPhotos().stream()
-                .map(photo -> photo.buildFullUrl(photoUrlBuilder))
-                .toList();
-
+        String roomMainUrl = null;
+        if (room.getMainPhoto() != null) {
+            roomMainUrl = room.getMainPhoto().buildFullUrl(photoUrlBuilder);
+        }
+        List<String> roomAdditionalUrls = new ArrayList<>();
+        if (room.getAdditionalPhotos() != null) {
+            roomAdditionalUrls = room.getAdditionalPhotos().stream()
+                    .map(photo -> photo.buildFullUrl(photoUrlBuilder))
+                    .toList();
+        }
         return new RoomInfoResponse(
                 room.getHotel().getHotelId(),
                 room.getHotel().getName(),
