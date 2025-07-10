@@ -7,6 +7,8 @@ import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.service.CustomerValidator;
+import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.hotel.service.HotelValidator;
 import staysplit.hotel_reservation.reservation.dto.request.CreateReservationRequest;
 import staysplit.hotel_reservation.reservation.dto.response.ReservationDetailResponse;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
@@ -37,10 +39,12 @@ public class ReservationService {
     private final ReservationParticipantRepository participantRepository;
     private final RoomRepository roomRepository;
     private final CustomerValidator customerValidator;
+    private final HotelValidator hotelValidator;
     private final ReservationMapper mapper;
 
     public ReservationDetailResponse makeTempReservation(String email, CreateReservationRequest request) {
         CustomerEntity customer = customerValidator.validateCustomerByEmail(email);
+        HotelEntity hotel = hotelValidator.validateHotel(request.hotelId());
 
         // 숙박일 수 계산
         LocalDate checkin = request.checkInDate();
@@ -50,6 +54,7 @@ public class ReservationService {
         // ReservationEntity 만들기 (status = WAITING_PAYMENT)
         ReservationEntity reservation = ReservationEntity.builder()
                 .reservationNumber(generateReservationNumber())
+                .hotel(hotel)
                 .checkInDate(checkin)
                 .checkOutDate(checkout)
                 .nights(nights)
