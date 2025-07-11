@@ -13,7 +13,7 @@ public record GetHotelListResponse(
         String mainImageUrl
 ) {
     public static GetHotelListResponse from(HotelEntity hotel, PhotoUrlBuilder urlBuilder) {
-        String mainUrl = hotel.getMainPhoto().buildFullUrl(urlBuilder);
+        String mainUrl = hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(urlBuilder) : null;
 
         return new GetHotelListResponse(
                 hotel.getHotelId(),
