@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import staysplit.hotel_reservation.cart.service.CartService;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupRequest;
@@ -24,6 +25,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CartService cartService;
 
     public CustomerDetailsResponse signup(CustomerSignupRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -51,6 +53,7 @@ public class CustomerService {
                 .build();
 
         customerRepository.save(customer);
+        cartService.createCart(request.email());
         return CustomerDetailsResponse.from(customer);
     }
 
@@ -75,6 +78,7 @@ public class CustomerService {
 
     public void delete(String email) {
         CustomerEntity customer = validateCustomer(email);
+        cartService.deleteCart(email);
         customerRepository.delete(customer);
     }
 
