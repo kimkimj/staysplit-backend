@@ -2,8 +2,6 @@ package staysplit.hotel_reservation.payment.controller;
 
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
-import com.siot.IamportRestClient.response.IamportResponse;
-import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.payment.domain.dto.request.CreatePaymentRequest;
@@ -42,4 +40,5 @@ public class PaymentController {
         List<CreatePaymentResponse> payments = paymentService.getPaymentsByCustomer(customerId);
         return Response.success(payments);
     }
+
 }

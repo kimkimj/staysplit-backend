@@ -8,6 +8,8 @@ public record CreatePaymentRequest(
         String payName,
         Integer amount,
         PaymentStatus status,
-        String impUid
+        String impUid,
+        Integer reservationId,
+        boolean isSplitPayment
 ) {
 }

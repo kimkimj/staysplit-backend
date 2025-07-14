@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.payment.domain.enums.PaymentStatus;
+import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
 
 import java.time.LocalDateTime;
 
@@ -25,9 +26,9 @@ public class PaymentEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     CustomerEntity customer;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "reservation_id", nullable = false)
-//    ReservationEntity reservation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = false)
+    ReservationEntity reservation;
 
 //    @Column(unique = true)
 //    private String merchantUid; // 가맹점 UID
