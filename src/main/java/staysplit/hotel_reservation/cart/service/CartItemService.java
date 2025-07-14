@@ -13,7 +13,6 @@ import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.service.CustomerValidator;
-import staysplit.hotel_reservation.reservation.service.ReservationService;
 import staysplit.hotel_reservation.reservedRoom.service.RoomStockService;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
@@ -27,7 +26,6 @@ public class CartItemService {
     private final CartValidator cartValidator;
     private final CustomerValidator customerValidator;
     private final RoomStockService roomStockService;
-    private final ReservationService reservationService;
     private final CartMapper cartMapper;
 
     // 카트에 있는 방 수량 변경
