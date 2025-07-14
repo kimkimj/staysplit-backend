@@ -38,15 +38,22 @@ public enum ErrorCode {
     // Reservation
     INVALID_CHECKOUT_DATE(HttpStatus.CONFLICT, "체크아웃 날짜는 체크인 날짜보다 이후여야 합니다."),
     RESERVATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "유효하지 않은 결제 정보입니다."),
-    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 예약입니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND.NOT_FOUND, "존재하지 않는 예약입니다."),
     RESERVED_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "예약하지 않은 방입니다."),
     INSUFFICIENT_ROOM_STOCK(HttpStatus.CONFLICT, "방 재고가 부족합니다."),
     PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS(HttpStatus.UNAUTHORIZED, "모든 참여자들이 결제를 완료하지 않았습니다."),
+    EXPIRED_RESERVATION(HttpStatus.CONFLICT, "이미 만료된 예약입니다."),
 
     // Photo
     INVALID_ENTITY_TYPE(HttpStatus.NOT_FOUND, "올바른 Entity Type을 입력해주세요 (HOTEL, ROOM)"),
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다."),
-    EXCEEDED_PHOTO_LIMIT(HttpStatus.CONFLICT, "사진은 5개까지만 등록할 수 있습니다.");
+    EXCEEDED_PHOTO_LIMIT(HttpStatus.CONFLICT, "사진은 5개까지만 등록할 수 있습니다."),
+
+    // Cart
+    ITEM_ALREADY_IN_CART(HttpStatus.CONFLICT, "이미 장바구니에 담긴 방입니다"),
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다"),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "징바구니에 존재하지 않는 상품입니다"),
+    UNAUTHORIZED_CUSTOMER(HttpStatus.UNAUTHORIZED, "사용자가 권한이 없습니다");
 
     private HttpStatus httpStatus;
     private String message;

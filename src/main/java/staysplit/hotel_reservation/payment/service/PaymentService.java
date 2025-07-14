@@ -15,6 +15,12 @@ import staysplit.hotel_reservation.payment.domain.dto.request.CreatePaymentReque
 import staysplit.hotel_reservation.payment.domain.dto.response.CreatePaymentResponse;
 import staysplit.hotel_reservation.payment.domain.entity.PaymentEntity;
 import staysplit.hotel_reservation.payment.repository.PaymentRepository;
+import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
+import staysplit.hotel_reservation.reservation.domain.entity.ReservationParticipantEntity;
+import staysplit.hotel_reservation.reservation.domain.enums.PaymentStatus;
+import staysplit.hotel_reservation.reservation.domain.enums.ReservationStatus;
+import staysplit.hotel_reservation.reservation.reposiotry.ReservationParticipantRepository;
+import staysplit.hotel_reservation.reservation.reposiotry.ReservationRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,6 +35,8 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final CustomerRepository customerRepository;
     private final IamportClient iamportClient;
+    private final ReservationParticipantRepository participantRepository;
+    private final ReservationRepository reservationRepository;
 
     public CreatePaymentResponse verifyAndCreatePayment(CreatePaymentRequest request)
             throws IamportResponseException, IOException {
@@ -57,6 +65,9 @@ public class PaymentService {
             throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS,
                     ErrorCode.INVALID_PAYMENT_STATUS.getMessage());
         }
+
+        // 결제 성공 시 Reservation Status 변경
+        changeReservationStatus(request.customerId(), request.reservationId(), request.isSplitPayment());
 
         // 3. 결제 저장
         return createPayment(request);
@@ -93,5 +104,23 @@ public class PaymentService {
         return paymentRepository.findByCustomerId(customerId).stream()
                 .map(CreatePaymentResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private void changeReservationStatus(Integer customerId, Integer reservationId, boolean isSplitPayment) {
+        ReservationEntity reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_NOT_FOUND, ErrorCode.RESERVATION_NOT_FOUND.getMessage()));
+
+
+
+        if (reservation.getExpiresAt().isAfter(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.EXPIRED_RESERVATION, ErrorCode.EXPIRED_RESERVATION.getMessage());
+        }
+
+        List<ReservationParticipantEntity> participants = participantRepository.findByReservationId(reservationId);
+        boolean allCompleted = participants.stream().allMatch(p -> p.getPaymentStatus() == PaymentStatus.COMPLETE);
+
+        if (allCompleted) {
+            reservation.updateStatus(ReservationStatus.CONFIRMED);
+        }
     }
 }

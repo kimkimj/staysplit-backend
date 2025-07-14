@@ -84,5 +84,4 @@ public class ReservationEntity {
     public void updateTotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
     }
-
 }

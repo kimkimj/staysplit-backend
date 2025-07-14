@@ -10,6 +10,7 @@ import staysplit.hotel_reservation.customer.service.CustomerValidator;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.hotel.service.HotelValidator;
 import staysplit.hotel_reservation.reservation.dto.request.CreateReservationRequest;
+import staysplit.hotel_reservation.reservation.dto.request.RoomReservationRequest;
 import staysplit.hotel_reservation.reservation.dto.response.ReservationDetailResponse;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationParticipantEntity;
@@ -132,7 +133,7 @@ public class ReservationService {
         int totalPrice = 0;
 
         // 요청된 방 하나씩 예약
-        for (CreateReservationRequest.RoomReservationDto roomDto : request.roomsAndQuantities()) {
+        for (RoomReservationRequest roomDto : request.roomsAndQuantities()) {
             RoomEntity room = validateRoomById(roomDto.roomId());
 
             // 이 방이 지정된 체크아웃과 체크인 날자 동안 재고가 있는지 확인
