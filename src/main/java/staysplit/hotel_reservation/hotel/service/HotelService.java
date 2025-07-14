@@ -10,6 +10,7 @@ import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.hotel.dto.request.*;
 import staysplit.hotel_reservation.hotel.dto.response.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.hotel.mapper.HotelMapper;
 import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.photo.service.PhotoUrlBuilder;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
@@ -26,6 +27,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final ProviderRepository providerRepository;
     private final PhotoUrlBuilder photoUrlBuilder;
+    private final HotelMapper mapper;
 
     public CreateHotelResponse createHotel(CreateHotelRequest request, String providerEmail) {
         ProviderEntity provider = validateProvider(providerEmail);
@@ -41,19 +43,19 @@ public class HotelService {
         provider.addHotel(hotel);
         hotelRepository.save(hotel);
 
-        return CreateHotelResponse.toDto(hotel);
+        return mapper.toCreateHotelResponse(hotel);
     }
 
     @Transactional(readOnly = true)
     public GetHotelDetailResponse getHotelDetails(Integer hotelId) {
         HotelEntity hotel = getHotelOrThrow(hotelId);
-        return GetHotelDetailResponse.from(hotel, photoUrlBuilder);
+        return mapper.toDetailResponse(hotel, photoUrlBuilder);
     }
 
     @Transactional(readOnly = true)
     public Page<GetHotelListResponse> getHotelList(Pageable pageable) {
         Page<HotelEntity> hotelPage = hotelRepository.findAll(pageable);
-        return hotelPage.map(hotel -> GetHotelListResponse.from(hotel, photoUrlBuilder));
+        return hotelPage.map(hotel -> mapper.toListResponse(hotel, photoUrlBuilder));
     }
 
     public GetHotelDetailResponse updateHotel(Integer hotelId, UpdateHotelRequest request, String providerEmail) {
@@ -63,7 +65,7 @@ public class HotelService {
         verifyOwnership(hotel, provider);
 
         hotel.updateHotel(request);
-        return GetHotelDetailResponse.from(hotel, photoUrlBuilder);
+        return mapper.toDetailResponse(hotel, photoUrlBuilder);
     }
 
     public DeleteHotelResponse deleteHotel(Integer hotelId, String email) {

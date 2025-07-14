@@ -5,7 +5,9 @@ import lombok.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -36,13 +38,9 @@ public class RoomEntity {
     @Column(nullable = false)
     private Integer totalQuantity;
 
+    @Builder.Default
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PhotoEntity> additionalPhotos;
-
-    @OneToOne
-    @JoinColumn(name = "main_photo_id")
-    private PhotoEntity mainPhoto;
-
+    private List<PhotoEntity> photos = new ArrayList<>();
 
     public void updateRoom(String roomType, Integer maxOccupancy,
                            Integer price, String description, Integer totalQuantity) {
@@ -53,14 +51,15 @@ public class RoomEntity {
         this.totalQuantity = totalQuantity;
     }
 
-    public void updateMainPhoto(PhotoEntity photo) {
-        this.mainPhoto = photo;
+    public void addPhoto(PhotoEntity photo) {
+        photos.add(photo);
         photo.setRoom(this);
     }
 
-    public void addAdditionalPhoto(PhotoEntity photo) {
-        additionalPhotos.add(photo);
-        photo.setRoom(this);
+    public Optional<PhotoEntity> getMainPhoto() {
+        return photos.stream()
+                .filter(PhotoEntity::isMainPhoto)
+                .findFirst();
     }
 
 }

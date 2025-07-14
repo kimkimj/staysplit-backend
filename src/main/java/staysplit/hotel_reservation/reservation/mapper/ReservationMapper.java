@@ -34,7 +34,7 @@ public class ReservationMapper {
                 .hotelName(hotel.getName())
                 .hotelAddress(hotel.getAddress())
                 .hotelMainImageUrl(
-                        hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(photoUrlBuilder) : null)
+                        hotel.getMainPhoto().isPresent() ? hotel.getMainPhoto().get().buildFullUrl(photoUrlBuilder) : null)
                 .build();
     }
 
@@ -74,7 +74,7 @@ public class ReservationMapper {
                 .hotelName(hotel.getName())
                 .hotelAddress(hotel.getAddress())
                 .hotelMainImageUrl(
-                        hotel.getMainPhoto() != null ? hotel.getMainPhoto().buildFullUrl(photoUrlBuilder) : null
+                        hotel.getMainPhoto().isPresent() ? hotel.getMainPhoto().get().buildFullUrl(photoUrlBuilder) : null
                 )
                 .build();
     }

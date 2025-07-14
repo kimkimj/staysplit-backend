@@ -1,7 +1,5 @@
 package staysplit.hotel_reservation.hotel.dto.response;
 
-import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-
 public record CreateHotelResponse(
         Integer hotelId,
         String name,
@@ -9,13 +7,4 @@ public record CreateHotelResponse(
         String description,
         Integer starLevel
 ) {
-    public static CreateHotelResponse toDto(HotelEntity hotel) {
-        return new CreateHotelResponse(
-                hotel.getHotelId(),
-                hotel.getName(),
-                hotel.getAddress(),
-                hotel.getDescription(),
-                hotel.getStarLevel()
-        );
-    }
 }
