@@ -60,6 +60,8 @@ public class HotelMapper {
                 hotel.getHotelId(),
                 hotel.getName(),
                 hotel.getAddress(),
+                hotel.getLongitude(),
+                hotel.getLatitude(),
                 hotel.getDescription(),
                 hotel.getStarLevel()
         );

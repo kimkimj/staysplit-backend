@@ -26,9 +26,13 @@ public class HotelEntity {
     @JoinColumn(name = "provider_id", nullable = false)
     private ProviderEntity provider;
 
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String address;
+    @Column(nullable = false)
     private BigDecimal longitude;
+    @Column(nullable = false)
     private BigDecimal latitude;
     private String description;
 
@@ -51,7 +55,6 @@ public class HotelEntity {
         this.latitude = request.latitude();
         this.description = request.description();
         this.starLevel = request.starLevel();
-        this.rating = request.rating();
     }
 
     public void addPhoto(PhotoEntity photo) {

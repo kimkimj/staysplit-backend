@@ -8,6 +8,5 @@ public record UpdateHotelRequest(
         BigDecimal longitude,
         BigDecimal latitude,
         String description,
-        Integer starLevel,
-        Double rating
+        Integer starLevel
 ) {}
