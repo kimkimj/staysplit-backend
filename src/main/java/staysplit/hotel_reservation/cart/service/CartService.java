@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.cart.domain.CartEntity;
 import staysplit.hotel_reservation.cart.dto.response.CartDetailResponse;
+import staysplit.hotel_reservation.cart.mapper.CartMapper;
 import staysplit.hotel_reservation.cart.repository.CartRepository;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.service.CustomerValidator;
@@ -17,6 +18,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartValidator cartValidator;
     private final CustomerValidator customerValidator;
+    private final CartMapper mapper;
 
 
     // 사용자의 장바구니 조회
@@ -25,7 +27,7 @@ public class CartService {
         CustomerEntity customer = customerValidator.validateCustomerByEmail(email);
         CartEntity cart = cartValidator.validateCartByCustomer(customer);
 
-        return CartDetailResponse.from(cart);
+        return mapper.toDetailResponse(cart);
     }
 
     // 장바구니 생성
