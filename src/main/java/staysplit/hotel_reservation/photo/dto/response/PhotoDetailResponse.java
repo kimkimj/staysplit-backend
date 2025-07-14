@@ -8,8 +8,8 @@ public record PhotoDetailResponse(
         String uploadedFileName,
         String savedFileName
 ) {
-    public static PhotoDetailResponse from(PhotoEntity photo, String displayType) {
-        return new PhotoDetailResponse(photo.getId(), displayType,
+    public static PhotoDetailResponse from(PhotoEntity photo) {
+        return new PhotoDetailResponse(photo.getId(), photo.getDisplayType().toString(),
                 photo.getUploadFileName(), photo.getStoredFileName());
     }
 }

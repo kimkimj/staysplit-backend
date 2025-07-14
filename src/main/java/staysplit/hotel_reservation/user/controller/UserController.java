@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class UserController {
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
 
-        return Response.success(response.role());
+        return Response.success("ROLE_" + response.role());
     }
 
     // 비밀 번호 변경
@@ -71,7 +72,7 @@ public class UserController {
         }
         String email = userDetails.getUsername();
         String role = userDetails.getAuthorities().stream()
-                .map(auth -> auth.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("UNKNOWN");
 

@@ -17,6 +17,7 @@ import staysplit.hotel_reservation.room.dto.request.CreateRoomRequest;
 import staysplit.hotel_reservation.room.dto.request.UpdateRoomRequest;
 import staysplit.hotel_reservation.room.dto.response.RoomDeleteResponse;
 import staysplit.hotel_reservation.room.dto.response.RoomInfoResponse;
+import staysplit.hotel_reservation.room.mapper.RoomMapper;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
@@ -30,6 +31,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
     private final PhotoUrlBuilder photoUrlBuilder;
+    private final RoomMapper mapper;
 
     public RoomInfoResponse createRoom(String email, CreateRoomRequest request) {
         ProviderEntity provider = validateProvider(email);
@@ -44,7 +46,7 @@ public class RoomService {
                 .build();
 
         roomRepository.save(room);
-        return RoomInfoResponse.from(room, photoUrlBuilder);
+        return mapper.toRoomInfoResponse(room, photoUrlBuilder);
     }
 
     public RoomInfoResponse updateRoom(String email, UpdateRoomRequest request) {
@@ -58,7 +60,7 @@ public class RoomService {
         room.updateRoom(request.roomType(), request.maxOccupancy(),
                 request.price(), request.description(), request.totalQuantity());
 
-        return RoomInfoResponse.from(room, photoUrlBuilder);
+        return mapper.toRoomInfoResponse(room, photoUrlBuilder);
     }
 
     public RoomDeleteResponse deleteRoom(String email, Integer roomId) {
@@ -77,14 +79,14 @@ public class RoomService {
     @Transactional(readOnly = true)
     public RoomInfoResponse findRoomById(Integer roomId) {
         RoomEntity room = validateRoom(roomId);
-        return RoomInfoResponse.from(room, photoUrlBuilder);
+        return mapper.toRoomInfoResponse(room, photoUrlBuilder);
     }
 
     @Transactional(readOnly = true)
     public Page<RoomInfoResponse> findAllRoomsByHotel(Integer hotelId, Pageable pageable) {
         HotelEntity hotel = validateHotelById(hotelId);
         Page<RoomEntity> rooms = roomRepository.findByHotel_HotelId(hotelId, pageable);
-        return rooms.map(room -> RoomInfoResponse.from(room, photoUrlBuilder));
+        return rooms.map(room -> mapper.toRoomInfoResponse(room, photoUrlBuilder));
     }
 
     private boolean hasAuthority(ProviderEntity provider, RoomEntity room) {

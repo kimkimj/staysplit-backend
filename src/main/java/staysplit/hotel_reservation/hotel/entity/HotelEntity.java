@@ -7,7 +7,9 @@ import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -38,12 +40,9 @@ public class HotelEntity {
     @Builder.Default
     private Integer reviewCount = 0;
 
+    @Builder.Default
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PhotoEntity> additionalPhotos;
-
-    @OneToOne
-    @JoinColumn(name = "main_photo_id")
-    private PhotoEntity mainPhoto;
+    private List<PhotoEntity> photos = new ArrayList<>();
 
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
@@ -55,14 +54,14 @@ public class HotelEntity {
         this.rating = request.rating();
     }
 
-    public void updateMainPhoto(PhotoEntity photo) {
-        this.mainPhoto = photo;
+    public void addPhoto(PhotoEntity photo) {
+        photos.add(photo);
         photo.setHotel(this);
     }
 
-    public void addAdditionalPhotos(PhotoEntity photo) {
-        additionalPhotos.add(photo);
-        photo.setHotel(this);
+    public Optional<PhotoEntity> getMainPhoto() {
+        return photos.stream()
+                .filter(PhotoEntity::isMainPhoto)
+                .findFirst();
     }
-
 }
