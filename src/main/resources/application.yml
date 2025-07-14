@@ -44,6 +44,16 @@ jwt:
   secret: dG9ieXNwcmluZ2Jvb3RjYW1wZ3VpZGVkYXRhYmFzZWVuZ2xpc2hqYXBhbnNlZG9zaWJvb2tzdG9ieXNwcmluZ2Jvb3RjYW1w
   expiration: 3000 #minutes
 
+
 iamport:
   api-key: 0165681344553345
   secret: XL8h5EJaZDMiEQyzqIIlsV8BkIQOTD23ZaLU2abAWPlNzy2ijXIgk6lbv6XkZhI4hQWfmSFYuUifTRWw
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+    key-alias: myserver
