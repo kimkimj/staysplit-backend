@@ -42,12 +42,12 @@ public enum ErrorCode {
     RESERVED_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "예약하지 않은 방입니다."),
     INSUFFICIENT_ROOM_STOCK(HttpStatus.CONFLICT, "방 재고가 부족합니다."),
     PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS(HttpStatus.UNAUTHORIZED, "모든 참여자들이 결제를 완료하지 않았습니다."),
+    EXPIRED_RESERVATION(HttpStatus.CONFLICT, "이미 만료된 예약입니다."),
 
     // Photo
     INVALID_ENTITY_TYPE(HttpStatus.NOT_FOUND, "올바른 Entity Type을 입력해주세요 (HOTEL, ROOM)"),
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다."),
     EXCEEDED_PHOTO_LIMIT(HttpStatus.CONFLICT, "사진은 5개까지만 등록할 수 있습니다."),
-    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다."),
 
     // Cart
     ITEM_ALREADY_IN_CART(HttpStatus.CONFLICT, "이미 장바구니에 담긴 방입니다"),

@@ -1,7 +1,6 @@
 package staysplit.hotel_reservation.cart.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.cart.domain.CartEntity;
@@ -14,16 +13,10 @@ import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.service.CustomerValidator;
-import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.reservation.dto.request.CreateReservationRequest;
-import staysplit.hotel_reservation.reservation.dto.request.RoomReservationRequest;
-import staysplit.hotel_reservation.reservation.dto.response.ReservationDetailResponse;
 import staysplit.hotel_reservation.reservation.service.ReservationService;
 import staysplit.hotel_reservation.reservedRoom.service.RoomStockService;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
-import staysplit.hotel_reservation.room.service.RoomValidator;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -106,54 +99,7 @@ public class CartItemService {
         return cartMapper.toCartItemDetailResponse(cartItem);
     }
 
-    // calculate totalAmount and send it to payments
 
 
-    // 여러 호텔의 여러 방을 한번에 예약 할 수 있음
-    public List<ReservationDetailResponse> checkOut(String email, List<Integer> cartItemIdList, Boolean isSplitPayment, List<String> invitedEmails) {
-
-        Map<String, List<CartItemEntity>> groups = new HashMap<>();
-        for (Integer cartItemId: cartItemIdList) {
-            CartItemEntity cartItem = cartValidator.validateCartItemById(cartItemId);
-            RoomEntity room = cartItem.getRoom();
-
-            // 재고 확인
-            roomStockService.validateAvailableStock(room, cartItem.getCheckInDate(), cartItem.getCheckOutDate(), cartItem.getQuantity());
-
-            String key = room.getHotel().getHotelId() + "|" + cartItem.getCheckInDate() + "|" + cartItem.getCheckOutDate();
-            if (!groups.containsKey(key)) {
-                groups.put(key, new ArrayList<>());
-            }
-            groups.get(key).add(cartItem);
-        }
-
-
-        // per reservation
-        Integer totalAmount = 0;
-        for (List<CartItemEntity> cartItemList: groups.values()) {
-            CartItemEntity firstItem = cartItemList.get(0);
-            HotelEntity hotel = firstItem.getRoom().getHotel();
-            LocalDate checkIn = firstItem.getCheckInDate();
-            LocalDate checkOUt= firstItem.getCheckOutDate();
-
-
-            List<RoomReservationRequest> roomRequests = new ArrayList<>();
-            for (CartItemEntity cartItem: cartItemList) {
-                roomRequests.add(new RoomReservationRequest(cartItem.getRoom().getId(), cartItem.getQuantity()));
-            }
-
-            // create reservation
-            CreateReservationRequest reservationRequest = CreateReservationRequest.builder()
-                    .hotelId(hotel.getHotelId())
-                    .roomsAndQuantities(roomRequests)
-                    .checkInDate(checkIn)
-                    .invitedEmails(invitedEmails)
-                    .isSplitPayment(isSplitPayment)
-                    .build();
-
-            reservationService.makeTempReservation(email, reservationRequest);
-        }
-
-    }
 
 }
