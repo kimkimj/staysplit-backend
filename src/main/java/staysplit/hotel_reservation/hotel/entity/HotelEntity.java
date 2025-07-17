@@ -19,7 +19,7 @@ public class HotelEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "hotel_id")
-    private Integer hotelId;
+    private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provider_id", nullable = false)

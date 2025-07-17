@@ -62,7 +62,7 @@ public class ReviewEntity {
     }
 
     public Integer getHotelId() {
-        return hotel != null ? hotel.getHotelId() : null;
+        return hotel != null ? hotel.getId() : null;
     }
 
     public String getNickname() {

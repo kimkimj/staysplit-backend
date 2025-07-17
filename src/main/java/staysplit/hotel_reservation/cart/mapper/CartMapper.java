@@ -34,7 +34,7 @@ public class CartMapper {
     public CartItemDetailResponse toCartItemDetailResponse(CartItemEntity cartItem) {
         return new CartItemDetailResponse(
                 cartItem.getCart().getId(),
-                cartItem.getRoom().getHotel().getHotelId(),
+                cartItem.getRoom().getHotel().getId(),
                 cartItem.getRoom().getId(),
                 cartItem.getCheckInDate(),
                 cartItem.getCheckOutDate(),

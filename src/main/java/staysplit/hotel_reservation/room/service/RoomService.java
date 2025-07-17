@@ -70,7 +70,7 @@ public class RoomService {
             throw new AppException(ErrorCode.UNAUTHORIZED_PROVIDER,
                     ErrorCode.UNAUTHORIZED_PROVIDER.getMessage());
         }
-        RoomDeleteResponse response = new RoomDeleteResponse(room.getHotel().getHotelId(), room.getId());
+        RoomDeleteResponse response = new RoomDeleteResponse(room.getHotel().getId(), room.getId());
         roomRepository.delete(room);
 
         return response;
@@ -85,7 +85,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public Page<RoomInfoResponse> findAllRoomsByHotel(Integer hotelId, Pageable pageable) {
         HotelEntity hotel = validateHotelById(hotelId);
-        Page<RoomEntity> rooms = roomRepository.findByHotel_HotelId(hotelId, pageable);
+        Page<RoomEntity> rooms = roomRepository.findByHotel_Id(hotelId, pageable);
         return rooms.map(room -> mapper.toRoomInfoResponse(room, photoUrlBuilder));
     }
 
@@ -98,7 +98,7 @@ public class RoomService {
     }
 
     private HotelEntity validateHotelById(Integer hotelId) {
-        return hotelRepository.findByHotelId(hotelId)
+        return hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND,
                         ErrorCode.HOTEL_NOT_FOUND.getMessage()));
     }

@@ -41,7 +41,7 @@ public class CheckOutService {
             // 재고 확인
             roomStockService.validateAvailableStock(room, cartItem.getCheckInDate(), cartItem.getCheckOutDate(), cartItem.getQuantity());
 
-            ReservationKey reservationKey = new ReservationKey(room.getHotel().getHotelId(), cartItem.getCheckInDate(), cartItem.getCheckOutDate());
+            ReservationKey reservationKey = new ReservationKey(room.getHotel().getId(), cartItem.getCheckInDate(), cartItem.getCheckOutDate());
             if (!groups.containsKey(reservationKey)) {
                 groups.put(reservationKey, new ArrayList<>());
             }

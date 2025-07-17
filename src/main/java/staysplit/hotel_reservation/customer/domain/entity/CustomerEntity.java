@@ -16,6 +16,7 @@ public class CustomerEntity {
 
     @Id
     @Column(name = "customer_id")
+    @Getter
     private Integer id;
 
     @MapsId
