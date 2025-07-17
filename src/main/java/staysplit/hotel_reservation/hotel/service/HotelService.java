@@ -1,6 +1,7 @@
 package staysplit.hotel_reservation.hotel.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,13 @@ import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import staysplit.hotel_reservation.room.repository.RoomRepository;
+
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,6 +36,7 @@ public class HotelService {
     private final ProviderRepository providerRepository;
     private final PhotoUrlBuilder photoUrlBuilder;
     private final HotelMapper mapper;
+    private final RoomRepository roomRepository;
 
     public CreateHotelResponse createHotel(CreateHotelRequest request, String providerEmail) {
         ProviderEntity provider = validateProvider(providerEmail);
@@ -70,6 +79,49 @@ public class HotelService {
         return mapper.toDetailResponse(hotel, photoUrlBuilder);
     }
 
+    @Transactional(readOnly = true)
+    public Page<GetHotelListResponse> searchHotels(HotelSearchRequest request, Pageable pageable) {
+        double centerLat = request.lat();
+        double centerLon = request.lon();
+
+        // 5km 반경 기준 박스 범위 대략 계산 (1도 ≒ 111km)
+        double kmPerDegree = 111;
+        double delta = 5.0 / kmPerDegree;
+
+        double minLat = centerLat - delta;
+        double maxLat = centerLat + delta;
+        double minLon = centerLon - delta;
+        double maxLon = centerLon + delta;
+
+        List<HotelEntity> candidates = hotelRepository.searchByLocation(minLat, maxLat, minLon, maxLon);
+
+        // 거리 계산 + 예약 가능 여부 필터
+        LocalDate checkIn = LocalDate.parse(request.checkInDate());
+        LocalDate checkOut = LocalDate.parse(request.checkOutDate());
+
+        List<HotelEntity> filtered = candidates.stream()
+                .map(hotel -> Map.entry(hotel,
+                        haversine(hotel.getLatitude().doubleValue(), hotel.getLongitude().doubleValue(), centerLat, centerLon)))
+                .filter(entry -> entry.getValue() <= 5)
+                .filter(entry -> {
+                    HotelEntity hotel = entry.getKey();
+                    return hotel.getRooms().stream()
+                            .anyMatch(room -> room.isAvailableDuring(checkIn, checkOut));
+                })
+                .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                .map(Map.Entry::getKey)
+                .toList();
+
+        // 페이징 수작업 적용
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), filtered.size());
+
+        List<HotelEntity> paged = filtered.subList(start, end);
+
+        return new PageImpl<>(paged, pageable, filtered.size())
+                .map(hotel -> GetHotelListResponse.toDto(hotel, photoUrlBuilder));
+    }
+
     public DeleteHotelResponse deleteHotel(Integer hotelId, String email) {
         ProviderEntity provider = validateProvider(email);
         HotelEntity hotel = getHotelOrThrow(hotelId);
@@ -95,5 +147,16 @@ public class HotelService {
         if (!hotel.getProvider().getId().equals(provider.getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이 호텔에 대한 권한이 없습니다.");
         }
+    }
+
+    private static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }

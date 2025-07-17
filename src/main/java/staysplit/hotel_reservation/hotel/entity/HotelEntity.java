@@ -5,11 +5,10 @@ import lombok.*;
 import staysplit.hotel_reservation.hotel.dto.request.UpdateHotelRequest;
 import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
+import staysplit.hotel_reservation.room.domain.RoomEntity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Getter
@@ -30,9 +29,9 @@ public class HotelEntity {
     private String name;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 17, scale = 14)
     private BigDecimal longitude;
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 17, scale = 14)
     private BigDecimal latitude;
     private String description;
 
@@ -66,5 +65,13 @@ public class HotelEntity {
         return photos.stream()
                 .filter(PhotoEntity::isMainPhoto)
                 .findFirst();
+    }
+
+    @Builder.Default
+    @OneToMany(mappedBy = "hotel",  cascade = CascadeType.ALL,  orphanRemoval = true)
+    private Set<RoomEntity> rooms = new HashSet<>();
+
+    public Set<RoomEntity> getRooms() {
+        return rooms;
     }
 }
