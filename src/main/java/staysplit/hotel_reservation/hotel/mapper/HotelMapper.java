@@ -25,7 +25,7 @@ public class HotelMapper {
                 .toList();
 
         return new GetHotelDetailResponse(
-                hotel.getHotelId(),
+                hotel.getId(),
                 hotel.getName(),
                 hotel.getAddress(),
                 hotel.getLongitude(),
@@ -45,7 +45,7 @@ public class HotelMapper {
         String mainUrl = mainPhoto.isPresent() ? mainPhoto.get().buildFullUrl(urlBuilder) : null;
 
         return new GetHotelListResponse(
-                hotel.getHotelId(),
+                hotel.getId(),
                 hotel.getName(),
                 hotel.getAddress(),
                 hotel.getStarLevel(),
@@ -57,7 +57,7 @@ public class HotelMapper {
 
     public CreateHotelResponse toCreateHotelResponse(HotelEntity hotel) {
         return new CreateHotelResponse(
-                hotel.getHotelId(),
+                hotel.getId(),
                 hotel.getName(),
                 hotel.getAddress(),
                 hotel.getLongitude(),

@@ -29,6 +29,7 @@ public class SecurityConfig {
             "/api/providers/sign-up",
             "/api/users/login",
             "/api/reviews/**",
+            "/api/likelist/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
@@ -37,6 +38,7 @@ public class SecurityConfig {
             "/api/hotels/**",
             "/api/rooms/**",
             "/api/reviews/**",
+            "/api/likelist/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
@@ -66,6 +68,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/reviews/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.GET, "/api/reservations/**").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.PUT, "/api/likelist/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/likelist/**").permitAll()
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

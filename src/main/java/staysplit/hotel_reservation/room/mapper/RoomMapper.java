@@ -24,7 +24,7 @@ public class RoomMapper {
                 .toList();
 
         return new RoomInfoResponse(
-                room.getHotel().getHotelId(),
+                room.getHotel().getId(),
                 room.getHotel().getName(),
                 room.getId(),
                 room.getRoomType(),

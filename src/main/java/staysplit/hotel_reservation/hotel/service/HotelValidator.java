@@ -13,7 +13,7 @@ public class HotelValidator {
     private final HotelRepository hotelRepository;
 
     public HotelEntity validateHotel(Integer hotelId) {
-        return hotelRepository.findByHotelId(hotelId)
+        return hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND, ErrorCode.HOTEL_NOT_FOUND.getMessage()));
     }
 

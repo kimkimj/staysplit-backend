@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface HotelRepository extends JpaRepository<HotelEntity, Integer> {
 
-    Optional<HotelEntity> findByHotelId(Integer hotelId);
+    Optional<HotelEntity> findById(Integer hotelId);
 
     //위치기반
     @Query("""

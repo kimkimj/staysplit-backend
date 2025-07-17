@@ -14,7 +14,7 @@ public record GetHotelListResponse(
 ) {
     public static GetHotelListResponse toDto(HotelEntity hotel, PhotoUrlBuilder photoUrlBuilder) {
         return new GetHotelListResponse(
-                hotel.getHotelId(),
+                hotel.getId(),
                 hotel.getName(),
                 hotel.getAddress(),
                 hotel.getStarLevel(),

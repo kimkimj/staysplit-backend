@@ -91,7 +91,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .join(reservation.participants, participant) // list
                 .join(participant.customer, customer)
                 .join(customer.user, user)
-                .where(hotel.hotelId.eq(hotelId)
+                .where(hotel.id.eq(hotelId)
                         .and(reservationNumberEq(condition.reservationNumber()))
                         .and(statusEq(condition.reservationStatus()))
                         .and(participantEmailEq(condition.guestEmail()))
@@ -114,7 +114,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .join(reservation.participants, participant) // list
                 .join(participant.customer, customer)
                 .join(customer.user, user)
-                .where(reservation.hotel.hotelId.eq(hotelId)
+                .where(reservation.hotel.id.eq(hotelId)
                         .and(reservationNumberEq(condition.reservationNumber()))
                         .and(statusEq(condition.reservationStatus()))
                         .and(participantEmailEq(condition.guestEmail()))

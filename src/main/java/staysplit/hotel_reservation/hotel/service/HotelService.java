@@ -139,7 +139,7 @@ public class HotelService {
     }
 
     private HotelEntity getHotelOrThrow(Integer hotelId) {
-        return hotelRepository.findByHotelId(hotelId)
+        return hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "호텔을 찾을 수 없습니다."));
     }
 
