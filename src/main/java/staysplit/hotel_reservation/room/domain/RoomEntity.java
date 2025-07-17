@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.photo.domain.PhotoEntity;
+import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Getter
@@ -62,4 +62,17 @@ public class RoomEntity {
                 .findFirst();
     }
 
+    @Builder.Default
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReservedRoomEntity> reservations = new HashSet<>();
+
+    public boolean isAvailableDuring(LocalDate checkIn, LocalDate checkOut) {
+
+        return reservations.stream().allMatch(res ->
+                res.getReservation().getCheckOutDate().isBefore(checkIn) ||
+                        res.getReservation().getCheckOutDate().isEqual(checkIn) ||
+                        res.getReservation().getCheckInDate().isAfter(checkOut) ||
+                        res.getReservation().getCheckInDate().isEqual(checkOut)
+        );
+    }
 }
