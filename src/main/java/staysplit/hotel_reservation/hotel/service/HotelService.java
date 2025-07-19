@@ -106,7 +106,9 @@ public class HotelService {
                 .filter(entry -> {
                     HotelEntity hotel = entry.getKey();
                     return hotel.getRooms().stream()
-                            .anyMatch(room -> room.isAvailableDuring(checkIn, checkOut));
+                            .anyMatch(room ->
+                                    room.getMaxOccupancy() >= request.guestCount() &&
+                                    room.isAvailableDuring(checkIn, checkOut));
                 })
                 .sorted(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
