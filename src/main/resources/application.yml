@@ -22,7 +22,7 @@ spring:
               client-secret: ${GOOGLE_CLIENT_SECRET}
 
               scope: openid, email, profile
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: https://localhost:8443/login/oauth2/code/google
             authorization-grant-type: authorization_code
         provider:
           google:
@@ -35,7 +35,7 @@ oauth:
   google:
     client-id: xxxx
     client-secret: yyyy
-    redirect-uri: http://localhost:3000/oauth/google/redirect
+    redirect-uri: https://localhost:8443/oauth/google/redirect
   kakao:
     client-id: xxxx
     redirect-uri: http://localhost:3000/oauth/kakao/redirect
@@ -62,7 +62,7 @@ file:
   dir: "C:/Users/...사진 저장할 주소"
 
 app:
-  base-url: http://localhost:8080
+  base-url: https://localhost:8443
 
   logging:
     level:
