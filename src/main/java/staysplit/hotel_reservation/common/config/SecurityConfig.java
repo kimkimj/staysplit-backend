@@ -46,6 +46,7 @@ public class SecurityConfig {
             "/login/oauth2/code/**",
             "/api/customers/google/login",
             "/oauth/**",
+            "/api/oauth/**"
     };
 
     @Bean
@@ -82,7 +83,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // TODO: 추가적으로 배포 url이 나오면 추가
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("*")); // 모든 http method 허용
         configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 http header 허용
         configuration.setAllowCredentials(true); // Authorization header 허용

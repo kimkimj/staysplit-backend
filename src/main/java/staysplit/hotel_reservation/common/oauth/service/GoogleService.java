@@ -41,7 +41,7 @@ public class GoogleService {
         return response.getBody();
     }
 
-    public GoogleProfileDto getGoolgleProfile(String token) {
+    public GoogleProfileDto getGoogleProfile(String token) {
         RestClient restClient = RestClient.create();
         ResponseEntity<GoogleProfileDto> response = restClient.get()
                 .uri("https://openidconnect.googleapis.com/v1/userinfo")
