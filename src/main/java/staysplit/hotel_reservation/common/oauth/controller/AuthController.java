@@ -47,7 +47,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup/oauth")
+    @PostMapping("/signup")
     public Response<CustomerDetailsResponse> oauthSignup(@RequestBody OauthSignupRequest request) {
         CustomerDetailsResponse response = oAuthService.oauthSignup(request);
         return Response.success(response);
