@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import staysplit.hotel_reservation.user.service.CustomUserDetailsService;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -29,14 +29,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
 
-    private static final Set<String> WHITELIST = Set.of(
-            "/api/customers/google/login",
-            "/api/customers/google/callback",
+    //FIXME: prefix 기반으로 필터링이므로, 추후 변경
+    private static final List<String> WHITELIST_PREFIXES = List.of(
+            "/api/customers/google",
             "/api/customers/oauth/signup",
             "/api/customers/sign-up",
             "/api/providers/sign-up",
-            "/api/users/login"
+            "/api/users/login",
+            "/swagger-ui/",
+            "/v3/api-docs"
     );
+
+    private boolean isWhitelisted(String path) {
+        return WHITELIST_PREFIXES.stream().anyMatch(path::startsWith);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -44,7 +50,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         log.info(">>> Incoming request path: {}", path);
 
         // JWT 검사 예외 경로 (콜백 URL 등)
-        if (WHITELIST.contains(path)) {
+        if (isWhitelisted(path)) {
             log.info(">>> Whitelisted URL detected, skipping JWT filter: {}", path);
             filterChain.doFilter(request, response);
             return;
