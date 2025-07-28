@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import staysplit.hotel_reservation.user.service.CustomUserDetailsService;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -28,8 +29,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
 
+    private static final Set<String> WHITELIST = Set.of(
+            "/api/customers/google/login",
+            "/api/customers/google/callback",
+            "/api/customers/oauth/signup",
+            "/api/customers/sign-up",
+            "/api/providers/sign-up",
+            "/api/users/login"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+        log.info(">>> Incoming request path: {}", path);
+
+        // JWT 검사 예외 경로 (콜백 URL 등)
+        if (WHITELIST.contains(path)) {
+            log.info(">>> Whitelisted URL detected, skipping JWT filter: {}", path);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String jwtToken = null;
         Cookie[] cookies = request.getCookies();
@@ -40,6 +59,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     jwtToken = cookie.getValue();
                 }
             }
+        }
+
+        if (jwtToken == null) {
+            log.warn("JWT 토큰이 없습니다. 인증 실패");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: JWT token is missing");
+            return;
         }
 
         try {

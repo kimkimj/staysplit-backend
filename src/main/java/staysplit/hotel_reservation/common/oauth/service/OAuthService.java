@@ -1,9 +1,11 @@
 package staysplit.hotel_reservation.common.oauth.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import retrofit2.Response;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.oauth.dto.*;
@@ -56,17 +58,16 @@ public class OAuthService {
         return CustomerDetailsResponse.from(customer);
     }
 
-    public String googleLogin(RedirectDto redirectDto) {
-    AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
-    GoogleProfileDto googleProfileDto = googleService.getGoogleProfile(accessTokenDto.getAccessToken());
+    public String getGoogleUserInfo(RedirectDto redirectDto) {
+        AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
+        GoogleProfileDto profile = googleService.getGoolgleProfile(accessTokenDto.getAccessToken());
 
-    UserEntity existingUser = userRepository.findBySocialId(googleProfileDto.getSub()).orElse(null);
+        UserEntity user = userRepository.findBySocialId(profile.getSub())
+                .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
+                        "socialId: " + profile.getSub() + ", email: " + profile.getEmail()));
 
-    if (existingUser == null) {
-        throw new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
-                "socialId: " + googleProfileDto.getSub() + ", email: " + googleProfileDto.getEmail());
+        return jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
     }
-
     return jwtTokenProvider.createToken(existingUser.getEmail(), existingUser.getRole().toString());
 }
 

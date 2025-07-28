@@ -17,12 +17,11 @@ spring:
       client:
         registration:
           google:
-            google:
-              client-id: ${GOOGLE_CLIENT_ID}
-              client-secret: ${GOOGLE_CLIENT_SECRET}
-
-              scope: openid, email, profile
-            redirect-uri: https://localhost:8443/login/oauth2/code/google
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, email, profile
+            redirect-uri: "https://localhost:8443/api/customers/google/callback"
+            callback-uri: "https://localhost:5173/oauth/google?code="
             authorization-grant-type: authorization_code
         provider:
           google:
@@ -38,11 +37,11 @@ oauth:
     redirect-uri: https://localhost:8443/oauth/google/redirect
   kakao:
     client-id: xxxx
-    redirect-uri: http://localhost:3000/oauth/kakao/redirect
+    redirect-uri: https://localhost:8443/oauth/kakao/redirect
 
 jwt:
   secret: dG9ieXNwcmluZ2Jvb3RjYW1wZ3VpZGVkYXRhYmFzZWVuZ2xpc2hqYXBhbnNlZG9zaWJvb2tzdG9ieXNwcmluZ2Jvb3RjYW1w
-  expiration: 3000 #minutes
+  expiration: 1800
 
 
 iamport:
@@ -57,6 +56,11 @@ server:
     key-store-password: changeit
     key-store-type: PKCS12
     key-alias: myserver
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
 
 file:
   dir: "C:/Users/...사진 저장할 주소"

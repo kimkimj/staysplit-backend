@@ -33,8 +33,6 @@ public class SecurityConfig {
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
-            "/api/hotels/*",
-            "/api/hotels",
             "/api/hotels/**",
             "/api/rooms/**",
             "/api/reviews/**",
@@ -45,8 +43,14 @@ public class SecurityConfig {
             "/oauth2/authorization/google",
             "/login/oauth2/code/**",
             "/api/customers/google/login",
+            "/api/customers/oauth/signup",
             "/oauth/**",
             "/api/oauth/**"
+    };
+
+    private final String[] OAUTH_GET_ENDPOINTS  = {
+            "/api/customers/google/callback",
+            "/api/customers/kakao/callback",
     };
 
     @Bean
@@ -59,9 +63,10 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers(OAUTH_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, OAUTH_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
-                        .requestMatchers(OAUTH_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .requestMatchers(HttpMethod.PUT, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
                         .requestMatchers(HttpMethod.DELETE, "/api/hotels/*", "/api/rooms/*").hasRole("PROVIDER")
@@ -71,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reservations/**").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.PUT, "/api/likelist/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/likelist/**").permitAll()
+                        .requestMatchers("/api/users/auth/status").permitAll()
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
@@ -83,7 +89,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // TODO: 추가적으로 배포 url이 나오면 추가
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:5173","http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("*")); // 모든 http method 허용
         configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 http header 허용
         configuration.setAllowCredentials(true); // Authorization header 허용

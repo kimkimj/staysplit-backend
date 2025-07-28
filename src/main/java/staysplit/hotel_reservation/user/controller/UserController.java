@@ -26,7 +26,7 @@ import staysplit.hotel_reservation.user.service.UserService;
 public class UserController {
 
     @Value("${jwt.expiration}")
-    private int jwtExpirationInMinutes;
+    private int jwtExpirationInSeconds;
 
     private final UserService userService;
 
@@ -37,7 +37,7 @@ public class UserController {
         UserLoginResponse response = userService.login(loginRequest);
 
         Cookie cookie = new Cookie("token", response.jwt());
-        cookie.setMaxAge(jwtExpirationInMinutes * 60); // 분 -> 초
+        cookie.setMaxAge(jwtExpirationInSeconds);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
