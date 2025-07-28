@@ -1,11 +1,9 @@
 package staysplit.hotel_reservation.common.oauth.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import retrofit2.Response;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.oauth.dto.*;
@@ -60,7 +58,7 @@ public class OAuthService {
 
     public String getGoogleUserInfo(RedirectDto redirectDto) {
         AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
-        GoogleProfileDto profile = googleService.getGoolgleProfile(accessTokenDto.getAccessToken());
+        GoogleProfileDto profile = googleService.getGoogleProfile(accessTokenDto.getAccessToken());
 
         UserEntity user = userRepository.findBySocialId(profile.getSub())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
@@ -68,22 +66,17 @@ public class OAuthService {
 
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
     }
-    return jwtTokenProvider.createToken(existingUser.getEmail(), existingUser.getRole().toString());
-}
 
     // 카카오 로그인
     public String kakaoLogin(RedirectDto redirectDto) {
         AccessTokenDto accessTokenDto = kakaoService.getAccessToken(redirectDto.getCode());
         KakaoProfileDto kakaoProfileDto = kakaoService.getKakaoProfile(accessTokenDto.getAccessToken());
-
         // 회원가입이 되어 있지 않다면 추가 정보 입력 받고, 회원가입
         UserEntity existingUser = userRepository.findBySocialId(kakaoProfileDto.getId()).orElse(null);
-
         if (existingUser == null) {
             throw new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
                     "socialId: " + kakaoProfileDto.getId() + ", email: " + kakaoProfileDto.getKakao_account());
         }
-
         // 회원가입 된 회원은 jwt 토큰 발급
         return jwtTokenProvider.createToken(existingUser.getEmail(), existingUser.getRole().toString());
     }
