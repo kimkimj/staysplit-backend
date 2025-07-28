@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/api/customers/google/login",
             "/api/customers/oauth/signup",
             "/oauth/**",
+            "/api/oauth/**"
     };
 
     private final String[] OAUTH_GET_ENDPOINTS  = {
@@ -88,6 +89,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // TODO: 추가적으로 배포 url이 나오면 추가
+
         configuration.setAllowedOrigins(Arrays.asList("https://localhost:5173","http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("*")); // 모든 http method 허용
         configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 http header 허용

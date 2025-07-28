@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import retrofit2.Response;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
-import staysplit.hotel_reservation.common.oauth.dto.GoogleProfileDto;
-import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
-import staysplit.hotel_reservation.common.oauth.dto.RedirectDto;
+import staysplit.hotel_reservation.common.oauth.dto.*;
 import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
@@ -28,6 +25,7 @@ public class OAuthService {
     private final BCryptPasswordEncoder encoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final GoogleService googleService;
+    private final KakaoService kakaoService;
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
 
@@ -70,20 +68,23 @@ public class OAuthService {
 
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
     }
+    return jwtTokenProvider.createToken(existingUser.getEmail(), existingUser.getRole().toString());
+}
 
-//
-//    // 카카오 로그인
-//    public String kakaoLogin(RedirectDto redirectDto) {
-//        AccessTokenDto accessTokenDto = kakaoService.getAccessToken(redirectDto.getCode());
-//        KakaoProfileDto kakaoProfileDto = kakaoService.getKakaoProfile(accessTokenDto.getAccessToken());
-//
-//        // 회원가입이 되어 있지 않다면 추가 정보 입력 받고, 회원가입 (oauthSignup())
-//        CustomerEntity customer = customerRepository.findBySocialId(kakaoProfileDto.getId());
-//        if (customer == null) {
-//            throw new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED, ErrorCode.ADDITIONAL_INFO_REQUIRED.getMessage());
-//        }
-//
-//        // 회원가입 된 회원은 jwt 토큰 발급
-//        return jwtTokenProvider.createToken(customer.getEmail(), customer.getRole().toString());
-//    }
+    // 카카오 로그인
+    public String kakaoLogin(RedirectDto redirectDto) {
+        AccessTokenDto accessTokenDto = kakaoService.getAccessToken(redirectDto.getCode());
+        KakaoProfileDto kakaoProfileDto = kakaoService.getKakaoProfile(accessTokenDto.getAccessToken());
+
+        // 회원가입이 되어 있지 않다면 추가 정보 입력 받고, 회원가입
+        UserEntity existingUser = userRepository.findBySocialId(kakaoProfileDto.getId()).orElse(null);
+
+        if (existingUser == null) {
+            throw new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
+                    "socialId: " + kakaoProfileDto.getId() + ", email: " + kakaoProfileDto.getKakao_account());
+        }
+
+        // 회원가입 된 회원은 jwt 토큰 발급
+        return jwtTokenProvider.createToken(existingUser.getEmail(), existingUser.getRole().toString());
+    }
 }
