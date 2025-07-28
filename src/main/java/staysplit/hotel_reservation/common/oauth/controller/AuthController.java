@@ -21,7 +21,7 @@ public class AuthController {
     public Response<?> googleLogin(@RequestBody RedirectDto redirectDto) {
         try {
             // 기존 사용자라면 jwt 반환
-            String jwt = oAuthService.googleLogin(redirectDto);
+            String jwt = oAuthService.getGoogleUserInfo(redirectDto);
             return Response.success(jwt);
         } catch (AppException e) {
             // 신규 사용자라면 추가 정보 입력 필요

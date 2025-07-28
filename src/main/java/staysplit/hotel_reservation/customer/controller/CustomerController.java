@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
 import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
 import staysplit.hotel_reservation.common.oauth.dto.RedirectDto;
 import staysplit.hotel_reservation.common.entity.Response;
