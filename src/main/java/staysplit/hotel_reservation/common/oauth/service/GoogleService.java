@@ -1,44 +1,67 @@
 package staysplit.hotel_reservation.common.oauth.service;
 
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
+import staysplit.hotel_reservation.common.exception.AppException;
+import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
 import staysplit.hotel_reservation.common.oauth.dto.GoogleProfileDto;
 
+import java.util.Map;
+
+@Slf4j
 @Service
 public class GoogleService {
 
-    @Value("${oauth.google.client-id}")
-    private String googleClientId;
-
-    @Value("${oauth.google.client-secret}")
-    private String googleClientSecret;
-
-    @Value("${oauth.google.redirect-uri}")
-    private String googleRedirectUri;
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String clientId;
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String clientSecret;
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String redirectUri;
 
     public AccessTokenDto getAccessToken(String code) {
-        // 인가코드, clientId, client_secret, redirect_uri, grant_type
+        try {
 
-        RestClient restClient = RestClient.create();
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", code);
-        params.add("client_id", googleClientId);
-        params.add("client_secret", googleClientSecret);
-        params.add("redirect_uri", googleRedirectUri);
-        params.add("grant_type", "authorization_code");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        ResponseEntity<AccessTokenDto> response = restClient.post()
-                .uri("https://oauth2.googleapis.com/token") // json에 있음
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .body(params)
-                .retrieve()
-                .toEntity(AccessTokenDto.class);
-        return response.getBody();
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("code", code);
+            params.add("client_id", clientId);
+            params.add("client_secret", clientSecret);
+            params.add("redirect_uri", redirectUri);
+            params.add("grant_type", "authorization_code");
+
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<AccessTokenDto> response = restTemplate.postForEntity(
+                    "https://oauth2.googleapis.com/token",
+                    request,
+                    AccessTokenDto.class
+            );
+
+            return response.getBody();
+
+        } catch (Exception e) {
+            log.error("Failed to get Google access token: {}", e.getMessage());
+            if (e instanceof HttpClientErrorException) {
+                log.error("Google response body: {}", ((HttpClientErrorException) e).getResponseBodyAsString());
+            }
+            throw new AppException(ErrorCode.OAUTH_PROVIDER_ERROR, "Failed to get access token from Google");
+        }
     }
 
     public GoogleProfileDto getGoolgleProfile(String token) {

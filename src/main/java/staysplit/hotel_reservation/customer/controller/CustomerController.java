@@ -1,10 +1,14 @@
 package staysplit.hotel_reservation.customer.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
 import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
 import staysplit.hotel_reservation.common.oauth.dto.RedirectDto;
 import staysplit.hotel_reservation.common.entity.Response;
@@ -14,6 +18,8 @@ import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupReq
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.service.CustomerService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/customers")
 @RequiredArgsConstructor
@@ -21,6 +27,11 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final OAuthService oAuthService;
+
+    @Value("${jwt.expiration}")
+    private int jwtExpirationInSeconds;
+    @Value("${spring.security.oauth2.client.registration.google.callback-uri}")
+    private String callback_uri;
 
     // 일반 회원가입
     @PostMapping("/sign-up")
@@ -65,12 +76,22 @@ public class CustomerController {
     }
 
 
-//    // 구글 로그인
     @PostMapping("/google/login")
-    public Response<?> googleLogin(@RequestBody RedirectDto redirectDto) {
+    public Response<?> googleLogin( @RequestBody RedirectDto redirectDto, HttpServletResponse response) {
         try {
             // 기존 사용자라면 jwt 반환
-            String jwt = oAuthService.googleLogin(redirectDto);
+            String jwt = oAuthService.getGoogleUserInfo(redirectDto);
+
+            ResponseCookie cookie = ResponseCookie.from("token", jwt)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .sameSite("Lax")
+                    .maxAge(jwtExpirationInSeconds)
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
             return Response.success(jwt);
         } catch (AppException e) {
             // 신규 사용자라면 추가 정보 입력 필요
@@ -81,12 +102,17 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/google/callback")
+    public void googleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+        String redirectUrl = callback_uri+code;
+        response.sendRedirect(redirectUrl);
+    }
 
 //    // Oauth 추가 정보 입력 후 회원가입
-    @PostMapping("/signup/oauth")
+    @PostMapping("/oauth/signup")
     public Response<CustomerDetailsResponse> oauthSignup(@RequestBody OauthSignupRequest request) {
-    CustomerDetailsResponse response = oAuthService.oauthSignup(request);
+        CustomerDetailsResponse response = oAuthService.oauthSignup(request);
 
-    return Response.success(response);
-        }
+        return Response.success(response);
+    }
 }

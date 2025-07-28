@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+
+    OAUTH_PROVIDER_ERROR(HttpStatus.CONFLICT, "구글 토큰 에러"),
     // USER
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복되는 닉네임입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "사용자의 이메일이 중복됩니다."),
