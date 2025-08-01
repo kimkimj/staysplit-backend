@@ -95,7 +95,7 @@ public class CustomerController {
         } catch (AppException e) {
             // 신규 사용자라면 추가 정보 입력 필요
             if (e.getErrorCode() == ErrorCode.ADDITIONAL_INFO_REQUIRED) {
-                return Response.error(ErrorCode.ADDITIONAL_INFO_REQUIRED);
+                return Response.warn(ErrorCode.ADDITIONAL_INFO_REQUIRED, e.getMessage());
             }
             throw e; //다른 에러는 그대로 전파
         }
@@ -107,7 +107,7 @@ public class CustomerController {
         response.sendRedirect(redirectUrl);
     }
 
-//    // Oauth 추가 정보 입력 후 회원가입
+    //  Oauth 추가 정보 입력 후 회원가입
     @PostMapping("/oauth/signup")
     public Response<CustomerDetailsResponse> oauthSignup(@RequestBody OauthSignupRequest request) {
         CustomerDetailsResponse response = oAuthService.oauthSignup(request);

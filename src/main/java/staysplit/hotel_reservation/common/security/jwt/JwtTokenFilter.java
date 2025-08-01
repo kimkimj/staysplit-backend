@@ -29,32 +29,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
 
-    //FIXME: prefix 기반으로 필터링이므로, 추후 변경
-    private static final List<String> WHITELIST_PREFIXES = List.of(
-            "/api/customers/google",
-            "/api/customers/oauth/signup",
-            "/api/customers/sign-up",
-            "/api/providers/sign-up",
-            "/api/users/login",
-            "/swagger-ui/",
-            "/v3/api-docs"
-    );
-
-    private boolean isWhitelisted(String path) {
-        return WHITELIST_PREFIXES.stream().anyMatch(path::startsWith);
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         log.info(">>> Incoming request path: {}", path);
-
-        // JWT 검사 예외 경로 (콜백 URL 등)
-        if (isWhitelisted(path)) {
-            log.info(">>> Whitelisted URL detected, skipping JWT filter: {}", path);
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String jwtToken = null;
         Cookie[] cookies = request.getCookies();
@@ -65,12 +43,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     jwtToken = cookie.getValue();
                 }
             }
-        }
-
-        if (jwtToken == null) {
-            log.warn("JWT 토큰이 없습니다. 인증 실패");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: JWT token is missing");
-            return;
         }
 
         try {
