@@ -1,6 +1,5 @@
 package staysplit.hotel_reservation.common.oauth.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,8 +17,6 @@ import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.oauth.dto.AccessTokenDto;
 import staysplit.hotel_reservation.common.oauth.dto.GoogleProfileDto;
 
-import java.util.Map;
-
 @Slf4j
 @Service
 public class GoogleService {
@@ -30,6 +27,8 @@ public class GoogleService {
     private String clientSecret;
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectUri;
+    @Value("${spring.security.oauth2.client.registration.google.scope}")
+    private String scope;
 
     public AccessTokenDto getAccessToken(String code) {
         try {
@@ -42,6 +41,7 @@ public class GoogleService {
             params.add("client_id", clientId);
             params.add("client_secret", clientSecret);
             params.add("redirect_uri", redirectUri);
+            params.add("scope", scope);
             params.add("grant_type", "authorization_code");
 
 

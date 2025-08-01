@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class GoogleProfileDto {
     private String sub;
     private String email;
+    private String given_name;
+    private String family_name;
     //private String picture;
 }
